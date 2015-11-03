@@ -13,7 +13,7 @@ function AkeraApi(akeraWebInstance) {
 AkeraApi.prototype.init = function(brokerName, route) {
     var app = this.akeraWebInstance.app;
 
-    route = (route === '/' ? '/rest' : route) || '/rest';
+    route = (route === '/' ? '/rest' : route) || this.akeraWebInstance.akeraServices.restRoute || '/rest';
 
     app.use(route + (brokerName ? '/' + brokerName : '/:broker'), new api_router(brokerName || null, this.akeraWebInstance));
     this.log('info', 'Akera API Service enabled for all brokers.');
