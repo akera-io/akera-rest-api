@@ -1,22 +1,20 @@
-var express = require('express');
 var akeraApi = require('akera-api');
 var p = akeraApi.call.parameter;
+var akeraWebInstance;
+var broker;
 
-function getMiddleware(brokerName, akeraWebInstance) {
-    var router = express.Router({
-        mergeParams: true
-    });
-
-    router.post('/api', function(req, res) {
+function setupRouter(config, router) {
+    akeraWebInstance = router.__app;
+    broker = router.__broker;
+    
+    router.post('/', function(req, res) {
         if (!req.body.call) {
             res.status(500).send({
                 mesasge: 'Invalid or no procedure details specified.'
             });
             return;
         }
-        brokerName = req.params.broker || brokerName;
-        var broker = akeraWebInstance.getBroker(brokerName);
-
+        try{
         akeraApi.connect(broker).then(function(conn) {
                 try {
                     var call = conn.call.procedure(req.body.call.procedure);
@@ -49,8 +47,11 @@ function getMiddleware(brokerName, akeraWebInstance) {
                 akeraWebInstance.log('error', err.message);
                 res.status(500).send(err);
             });
+        } catch(err) {
+          console.log(err);
+          res.status(500).send(err);
+        }
     });
-    return router;
 }
 
-module.exports = getMiddleware;
+module.exports = setupRouter;
