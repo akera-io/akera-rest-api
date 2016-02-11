@@ -14,9 +14,7 @@ function setupRouter(config, router) {
             });
             return;
         }
-        try{
         akeraApi.connect(broker).then(function(conn) {
-                try {
                     var call = conn.call.procedure(req.body.call.procedure);
                     var parameters = [];
                     req.body.call.parameters.forEach(function(param) {
@@ -34,23 +32,17 @@ function setupRouter(config, router) {
                     });
                     call.parameters.apply(call, parameters).run().then(function(response) {
                         res.status(200).send(response);
-                    }, function(err) {
+                        conn.disconnect();
+                    }, function(err) {                      
+                        res.status(500).send({message: err.message, code:err.code});
                         akeraWebInstance.log('error', err.message);
-                        res.status(500).send(err);
+                        conn.disconnect();
                     });
-                } catch (err) {
-                    akeraWebInstance.log('error', err.message);
-                    res.status(500).send(err);
-                }
             },
             function(err) {
                 akeraWebInstance.log('error', err.message);
                 res.status(500).send(err);
             });
-        } catch(err) {
-          console.log(err);
-          res.status(500).send(err);
-        }
     });
 }
 
