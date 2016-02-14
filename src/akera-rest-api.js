@@ -76,9 +76,10 @@ function AkeraRestApi(akeraWebApp) {
   };
 
   this.init = function(config, router) {
-    
-    if (!router || !router.__app || typeof router.__app.require !== 'function')
+
+    if (!router || !router.__app || typeof router.__app.require !== 'function') {
       throw new Error('Invalid Akera web service router.');
+    }
 
     config = config || {};
     akeraApp = router.__app;
