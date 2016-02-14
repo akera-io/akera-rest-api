@@ -58,8 +58,10 @@ function AkeraRestApi(akeraWebApp) {
           }
 
           call.run().then(function(response) {
+            conn.disconnect();
             res.status(200).send(response);
           }, function(err) {
+            conn.disconnect();
             self.error(err, res, akeraApp);
           });
         } catch (err) {
