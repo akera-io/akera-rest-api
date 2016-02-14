@@ -5,9 +5,6 @@
     "email": "radu.nicoara@acorn.ro"
   },
   "homepage": "http://akera.io",
-  "publishConfig": {
-    "registry": "http://repository.akera.io/"
-  },
   "version": "1.0.2",
   "description": "Akera.io REST API service",
   "license": {
