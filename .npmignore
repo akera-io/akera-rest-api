@@ -1,4 +1,5 @@
-\src\
-\test\
 \coverage\
 \node_modules\
+\src\
+.settings
+.project

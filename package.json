@@ -5,19 +5,23 @@
     "email": "radu.nicoara@acorn.ro"
   },
   "homepage": "http://akera.io",
-  "publishConfig": {
-    "registry": "http://repository.akera.io/"
+  "version": "1.0.1",
+  "description": "Akera.io REST API service",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/akera-io/akera-rest-api/raw/master/LICENSE"
   },
-  "version": "1.0.0",
-  "description": "Akera-web API component",
-  "license": "SEE LICENSE IN <LICENSE>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akera-io/akera-rest-api.git"
+  },
   "engines": {
     "node": ">= 0.10.0"
   },
   "main": "index.js",
   "dependencies": {
     "express": "latest",
-    "akera-api": "1.0.4"
+    "akera-api": ">=1.0.7"
   },
   "scripts": {
     "prepublish": "grunt"
