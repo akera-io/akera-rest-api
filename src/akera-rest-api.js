@@ -21,7 +21,7 @@ function AkeraRestApi(akeraWebApp) {
   };
 
   this.handleRequest = function(req, res) {
-    var broker = req.__broker;
+    var broker = req.broker;
     var callInfo = req.body.call;
 
     if (!callInfo || !callInfo.procedure) {
