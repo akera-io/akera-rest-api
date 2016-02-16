@@ -83,10 +83,10 @@ function AkeraRestApi(akeraWebApp) {
 
     config = config || {};
     akeraApp = router.__app;
-    var restRoute = akeraApp.getRoute(config.route || '/rest/api/');
+    config.route = akeraApp.getRoute(config.route || '/rest/api/');
 
-    router.post(restRoute, self.handleRequest);
-    router.get(restRoute, self.handleRequest);
+    router.post(config.route, self.handleRequest);
+    router.get(config.route, self.handleRequest);
 
   };
 
