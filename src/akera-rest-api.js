@@ -9,14 +9,15 @@ function AkeraRestApi(akeraWebApp) {
 
   this.error = function(err, res) {
     if (err) {
-      if (typeof err === 'string') {
-        err = {
-          message : err
-        };
+      if (err instanceof Error) {
+        err = err.message;
       }
 
-      res.status(500).send(err);
-      akeraApp.log('error', err.message);
+      res.status(500).send({
+          message : err
+      });
+      
+      akeraApp.log('error', err);
     }
   };
 
