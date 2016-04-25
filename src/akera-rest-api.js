@@ -23,22 +23,36 @@ function AkeraRestApi(akeraWebApp) {
 
   this.handleRequest = function(req, res) {
     var broker = req.broker;
-    var callInfo = req.body.call;
+    var callProc = null;
+    var callParams = null;
 
-    if (!callInfo || !callInfo.procedure) {
-      self.error('Invalid or no procedure details specified.', res, akeraApp);
-      return;
+    if (req.method === 'GET') {
+      callProc = req.query.procedure;
+      if (req.query.parameters) {
+        try {
+          callParams = JSON.parse(req.query.parameters);
+        } catch (err) {
+          return self.error('Invalid procedure parameters format, must be a JSON array.', res, akeraApp);
+        }
+      }
+    } else {
+      callProc = req.body.procedure || req.body.call && req.body.call.procedure;
+      callParams = req.body.parameters || req.body.call && req.body.call.parameters;
+    }
+    
+    if (!callProc) {
+      return self.error('Invalid or no procedure details specified.', res, akeraApp);
     }
 
     try {
       akeraApi.connect(broker).then(function(conn) {
         try {
-          var call = conn.call.procedure(callInfo.procedure);
+          var call = conn.call.procedure(callProc);
 
-          if (callInfo.parameters instanceof Array) {
+          if (callParams instanceof Array) {
             var parameters = [];
 
-            callInfo.parameters.forEach(function(param) {
+            callParams.forEach(function(param) {
 
               param.dataType = param.dataType || 'character';
               param.dataType = param.dataType.toLowerCase();
