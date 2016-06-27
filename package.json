@@ -20,9 +20,12 @@
   },
   "main": "index.js",
   "dependencies": {
-    "akera-api": ">=1.0.15"
+    "akera-api": ">=1.0.15",
+    "xmlbuilder": "^8.2.2"
   },
-  "bundledDependencies": ["akera-api"],
+  "bundledDependencies": [
+    "akera-api"
+  ],
   "scripts": {
     "prepublish": "grunt"
   },

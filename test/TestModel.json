@@ -1,0 +1,74 @@
+[
+	{
+		"name": "TestModel",
+		"properties": 
+		{
+			"name": 
+			{
+				"type": "character"
+			}
+		},
+
+		"methods": 
+		[
+			{
+				"name": "hello",
+				"params": 
+				[
+					{
+						"name": "name",
+						"direction": "in",
+						"type": "character"
+					},
+
+					{
+						"name": "greeting",
+						"type": "character",
+						"direction": "out"
+					}
+				]
+			}
+		]
+	},
+
+	{
+		"name": "Customer",
+		"properties": 
+		{
+			"CustNum": 
+			{
+				"type": "Edm.Int32"
+			},
+
+			"SalesRep": 
+			{
+				"type": "Edm.String"
+			},
+
+			"Name": 
+			{
+				"type": "Edm.String"
+			},
+
+			"Country": 
+			{
+				"type": "Edm.String"
+			}
+		},
+
+		"methods": 
+		[
+			{
+				"name": "getName",
+				"params": 
+				[
+					{
+						"name": "id",
+						"type": "integer",
+						"direction": "in"
+					}
+				]
+			}
+		]
+	}
+]
