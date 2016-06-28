@@ -139,33 +139,22 @@ function ODataModel(definition) {
           properties: {}
       };
       
-      console.log('configuring %s', mdl.name);
+      //console.log('configuring %s', mdl.name);
       
       Object.keys(mdl.properties).forEach(function(prop) {
         if (mdl.properties[prop].type)
           mdl.properties[prop].type = oDataTypeMap[mdl.properties[prop].type.toLowerCase()] || mdl.properties[prop].type;
         odataDef.entityTypes[mdl.name].properties[prop] = mdl.properties[prop];
       });
-      /*mdl.properties.forEach(function(prop) {
-        odataDef.entityTypes[mdl.name].properties[prop.name] = {
-            type: prop.type
-        };
-      });*/
       
-      
-     /* odataDef.entityTypes[mdl.name].actions = {};
-      mdl.methods.forEach(function(method) {
-        odataDef.entityTypes[mdl.name].actions[method.name] = {
-            
-        };
-          method.params.forEach(function(param) {
-            odataDef.entityTypes[mdl.name].properties[method.name][param.name] = {
-                type: param.type,
-                direction: param.direction
-            };
+      odataDef.entityTypes[mdl.name].actions = mdl.methods || [];
+      odataDef.entityTypes[mdl.name].actions.forEach(function(action) {
+        if (action.params) {
+          action.params.forEach(function(param) {
+            param.type = oDataTypeMap[param.type.toLowerCase()] || param.type;
           });
-      });*/
-      
+        }
+      });
       
       odataDef.entitySets[mdl.name + 's'] = {
           entityType: broker.name + '.' + mdl.name
@@ -173,7 +162,7 @@ function ODataModel(definition) {
 
     });
     definition = odataDef;
-    console.log(JSON.stringify(definition, null, '\t'));
+   // console.log(JSON.stringify(definition, null, '\t'));
     if (definition && definition.namespace) {
       if (!model)
         model = {

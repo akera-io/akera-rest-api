@@ -66,8 +66,44 @@ function serializeEntityNavigations(model, entityType, setNode) {
   }
 }
 
-function buildSchemaMetadata(schema, schemaNode) {
+function serializeAction(method, entityType, schemaNode) {
+  var actionNode = schemaNode.ele({
+    'Action' : {
+      '@Name': method.name,
+      '@IsBound': true
+    }
+  });
+  
+  method.params.forEach(function(param) {
+    if (param.direction === 'in' || param.direction === 'inout') {
+      actionNode.ele({
+        'Parameter' : {
+          '@Name' : param.name,
+          '@Type' : param.type,
+          '@Nullable' : param.required || false
+        }
+      });
+    }
+  });
+}
 
+function serializeEntityContainerActions(entityTypes, containerNode, namespace) {
+  Object.keys(entityTypes).forEach(function(type) {
+    //console.log(entityTypes[type]);
+    var actions = entityTypes[type].actions;
+    actions.forEach(function(action) {
+      containerNode.ele({
+        'ActionImport' : {
+          '@Name' : action.name,
+          '@Action' : namespace + '.' + type + '.' + action.name 
+        }
+      });
+    });
+  });
+}
+
+function buildSchemaMetadata(schema, schemaNode, namespace) {
+  //console.log(schema.model.getNamespaces());
   for ( var typeKey in schema.entityTypes) {
     var entityNode = schemaNode.ele({
       'EntityType' : {
@@ -93,6 +129,10 @@ function buildSchemaMetadata(schema, schemaNode) {
       serializeProperty(propKey,
           schema.entityTypes[typeKey].properties[propKey], entityNode);
     }
+    
+    schema.entityTypes[typeKey].actions.forEach(function(method) {
+        serializeAction(method, schema.entityTypes[typeKey], schemaNode);
+    });
   }
 
   for ( var typeKey in schema.complexTypes) {
@@ -126,6 +166,8 @@ function buildSchemaMetadata(schema, schemaNode) {
       serializeEntityNavigations(schema.model, schema.model
           .getType(schema.entitySets[setKey].entityType), setNode);
     }
+    
+    serializeEntityContainerActions(schema.entityTypes, containerNode, namespace);
   }
 };
 
@@ -153,7 +195,7 @@ function buildMetadata(model) {
       }
     });
 
-    buildSchemaMetadata(model.getNamespace(namespace), schemaNode);
+    buildSchemaMetadata(model.getNamespace(namespace), schemaNode, namespace);
   });
 
   return root.end({
