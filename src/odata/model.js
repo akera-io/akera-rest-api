@@ -145,6 +145,11 @@ function ODataModel(definition) {
         if (mdl.properties[prop].type)
           mdl.properties[prop].type = oDataTypeMap[mdl.properties[prop].type.toLowerCase()] || mdl.properties[prop].type;
         odataDef.entityTypes[mdl.name].properties[prop] = mdl.properties[prop];
+        
+        if (mdl.properties[prop].key === true) {
+           odataDef.entityTypes[mdl.name].key = odataDef.entityTypes[mdl.name].key || [];
+           odataDef.entityTypes[mdl.name].key.push(prop);
+        }
       });
       
       odataDef.entityTypes[mdl.name].actions = mdl.methods || [];
@@ -228,7 +233,7 @@ function ODataModel(definition) {
 
         parseRelations();
       }
-
+      this.modelDefinition = definition;
     } else {
       throw new Error('Invalid oData model definition.');
     }
