@@ -155,6 +155,11 @@ module.exports = {
   },
   edmType : function(type) {
     return oDataTypeMap(type.toLowerCase()) || type;
+  },
+  getOdataCtxUrl: function(req, collection) {
+    var url = req.protocol + '://' + req.get('host') + req.originalUrl;
+    url = url.split(collection)[0] + '$metadata#' + collection;
+    return url;
   }
 };
 

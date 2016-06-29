@@ -8,6 +8,7 @@ var parser = require("odata-parser");
 var queryTransform = require("./queryTransform.js");
 var url = require("url");
 var querystring = require("querystring");
+var utils = require('../utils.js');
 
 module.exports = function(cfg, req, res) {
   console.log(cfg.model);
@@ -61,8 +62,9 @@ module.exports = function(cfg, req, res) {
         console.log('in callback');
         res.writeHead(200, {'Content-Type': 'application/json', 'OData-Version': '4.0'});
 
+        console.log(queryOptions.$inlinecount);
         var out = {
-            "@odata.context": cfg.serviceUrl + "$metadata#" + req.params.collection,
+            "@odata.context": utils.getOdataCtxUrl(req, queryOptions.collection),//req.protocol + '://' +  req.get('host') + cfg.serviceUrl + "$metadata#" + req.params.collection,
             "value": result
         }
 

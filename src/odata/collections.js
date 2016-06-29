@@ -13,7 +13,7 @@ module.exports = function(cfg, originalUrl) {
       '@xmlns:atom' : 'http://www.w3.org/2005/Atom',
       '@xmlns:m' : 'http://docs.oasis-open.org/odata/ns/metadata',
       '@xml:base' : originalUrl,
-      '@m:context' : originalUrl + '/$metadata'
+      '@m:context' : originalUrl + '$metadata'
     }
   });
 

@@ -15,7 +15,8 @@ module.exports = {
   },
   transformAkeraQuery : function(aQuery, query, collection, model) {
     var filter = query.$filter;
-
+    console.log(JSON.stringify(filter, null, '\t'));
+    
     if (query.$select) {
       var fields = Object.keys(query.$select);
       if (fields.length > 0) {
@@ -38,10 +39,35 @@ module.exports = {
           return aQuery.where(f.eq(k, flt));
 
         }
+        if (k === '$and') {
+          var ands = filter[k];
+          console.log(ands);
+          var fAnds = [];
+          for (var a=0; a<ands.length; a++) {
+             Object.keys(ands[a]).forEach(function(aKey) {
+               fAnds.push(f.eq(aKey, ands[a][aKey]));
+               //console.log(fAnds);
+             });
+          }
+          
+          aQuery = aQuery.where(f.and.call(f, fAnds));
+        } else if (k === '$or') {
+          var ors = filter[k];
+          var fOrs = [];
+          for (var o=0; o<ors.length; o++) {
+            Object.keys(ors[o]).forEach(function(oKey) {
+              fOrs.push(f.eq(oKey, ors[o][oKey]));
+            });
+          }
+          aQuery = aQuery.where(f.or.call(f, fOrs));
+        }
+        
+        else
         aQuery = aQuery.where(f.eq(k, filter[k]));
       }
     }
 
+    
     if (query.$limit || query.$top) {
       aQuery = aQuery.limit(query.$limit || query.$top);
     }
@@ -63,6 +89,7 @@ module.exports = {
         aQuery = aQuery.by(sortParam, desc);
       }
     }
+   
     return aQuery;
   },
   getPrimaryKey : function(collection, model) {
