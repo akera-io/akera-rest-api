@@ -100,7 +100,7 @@ function serializeFunctionNode(method, entityNode, schemaNode) {
   
   var params = util.getMethodParams(method.definition);
   params.forEach(function(param) {
-    if (param.definition.direction === 'in' || param.definition.direction === 'inout')
+    if (param.definition.direction === 'out' || param.definition.direction === 'inout')
       outParams.push(param);
   });
  
@@ -135,6 +135,13 @@ function serializeFunctionNode(method, entityNode, schemaNode) {
           '@Type': param.definition.type
         }
       });
+    });
+    
+    functionNode.ele({
+      'ReturnType': {
+        '@Name': method.name + '_return',
+        '@Type': method.name + '_return'
+      }
     });
   }
   

@@ -45,6 +45,12 @@
 						{
 							"type": "Edm.Float",
 							"direction": "out"
+						},
+
+						"negative": 
+						{
+							"type": "Edm.Boolean",
+							"direction": "out"
 						}
 					}
 				},
@@ -133,11 +139,16 @@
 			]
 		}
 	},
-	"entitySets": {
-		"Customers": {
+
+	"entitySets": 
+	{
+		"Customers": 
+		{
 			"entityType": "demo.sports2000.Customer"
 		},
-		"Orders": {
+
+		"Orders": 
+		{
 			"entityType": "demo.sports2000.Order"
 		}
 	}
