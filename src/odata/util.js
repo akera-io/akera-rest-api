@@ -1,5 +1,7 @@
 var akera = require('akera-api');
 var f = akera.query.filter;
+var fs = require('fs');
+var path = require('path');
 
 module.exports = {
   getEntityType : function(collection, model) {
@@ -15,8 +17,6 @@ module.exports = {
   },
   transformAkeraQuery : function(aQuery, query, collection, model) {
     var filter = query.$filter;
-    console.log(JSON.stringify(filter, null, '\t'));
-    
     if (query.$select) {
       var fields = Object.keys(query.$select);
       if (fields.length > 0) {
@@ -41,12 +41,10 @@ module.exports = {
         }
         if (k === '$and') {
           var ands = filter[k];
-          console.log(ands);
           var fAnds = [];
           for (var a=0; a<ands.length; a++) {
              Object.keys(ands[a]).forEach(function(aKey) {
                fAnds.push(f.eq(aKey, ands[a][aKey]));
-               //console.log(fAnds);
              });
           }
           
@@ -95,13 +93,69 @@ module.exports = {
   getPrimaryKey : function(collection, model) {
     var entity = this.getEntityType(collection, model);
     for ( var k in entity) {
-      console.log(k);
       if (entity[k].key == true) {
-        console.log('found key', k);
         return k;
       }
     }
     return null;
+  },
+  getModels : function(modelPath) {
+    if (!fs.existsSync(modelPath)) {
+      throw new Error('Invalid model path specified');
+    }
+    
+    var model = require('./model.js');
+    model = new model();
+    
+    
+    if (fs.statSync(modelPath).isDirecotry) {  
+      var files = fs.readdirSync().map(function(filename) {
+        if (path.extname(filename).toLowerCase() === '.json')
+          return path.join(modelPath, filename);
+      });
+
+      files.forEach(function(file) {
+          var mdl = require(file);
+          model.load(mdl);
+      });     
+    } else {
+      var mdl = require(modelPath);
+      model.load(mdl);
+    }  
+    return model;  
+  },
+  getMethodParams: function(method) {
+    var params = [];
+    if (!method.params)
+      return params;
+    
+    Object.keys(method.params).forEach(function(param) {
+      params.push({
+        name: param,
+        definition: method.params[param]
+      });
+    });
+    
+    return params;
+  },
+  getMethods: function(entityType, methodType) {
+    var methods = [];
+    if (!entityType.methods)
+      return methods;
+    Object.keys(entityType.methods).forEach(function(method) {
+      if (methodType) {
+        if (entityType.methods[method].type === methodType)
+          methods.push({
+            name: method,
+            definition: entityType.methods[method]
+          });
+      }
+        else methods.push({
+          name: method,
+          definition: entityType.methods[method]
+        });
+    });
+    return methods;
   }
 };
 

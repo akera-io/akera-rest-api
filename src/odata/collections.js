@@ -4,8 +4,13 @@
  * Orchestrate the OData / request
  */
 var xmlbuilder = require('xmlbuilder');
+/*!
+ * Copyright(c) 2016 Acorn IT
+ *
+ * OData collections meta-data serialization
+ */
 
-module.exports = function(cfg, originalUrl) {
+module.exports = function(model, originalUrl) {
 
   var xml = xmlbuilder.create({
     'service' : {
@@ -19,16 +24,23 @@ module.exports = function(cfg, originalUrl) {
 
   var workspaceNode = xml.ele('workspace');
 
-  for ( var key in cfg.model.entitySets) {
-    workspaceNode.ele('atom:title', {
-      'type' : 'text'
-    }, 'Default');
-    workspaceNode.ele('collection', {
-      'href' : key
-    }).ele('atom:title', {
-      'type': 'text'
-    }, key);
-  }
+  var namespaces = model.getNamespaces();
+
+  namespaces.forEach(function(namespace) {
+    var ns = model.getNamespace(namespace);
+    if (ns.entitySets) {
+      Object.keys(ns.entitySets).forEach(function(eSet) {
+        workspaceNode.ele('atom:title', {
+          'type' : 'text'
+        }, 'Default');
+        workspaceNode.ele('collection', {
+          'href' : eSet
+        }).ele('atom:title', {
+          'type' : 'text'
+        }, eSet);
+      });
+    }
+  });
 
   xml.end({
     pretty : true

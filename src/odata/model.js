@@ -123,51 +123,7 @@ function ODataModel(definition) {
     };
   };
 
-  this.load = function(definition, broker) {
-    var odataDef = {
-        namespace: broker.name
-    };
-    
-    odataDef.entityTypes = {
-        
-    };
-    odataDef.entitySets = {
-        
-    };
-    definition.forEach(function(mdl) {
-      odataDef.entityTypes[mdl.name] = {
-          properties: {}
-      };
-      
-      //console.log('configuring %s', mdl.name);
-      
-      Object.keys(mdl.properties).forEach(function(prop) {
-        if (mdl.properties[prop].type)
-          mdl.properties[prop].type = oDataTypeMap[mdl.properties[prop].type.toLowerCase()] || mdl.properties[prop].type;
-        odataDef.entityTypes[mdl.name].properties[prop] = mdl.properties[prop];
-        
-        if (mdl.properties[prop].key === true) {
-           odataDef.entityTypes[mdl.name].key = odataDef.entityTypes[mdl.name].key || [];
-           odataDef.entityTypes[mdl.name].key.push(prop);
-        }
-      });
-      
-      odataDef.entityTypes[mdl.name].actions = mdl.methods || [];
-      odataDef.entityTypes[mdl.name].actions.forEach(function(action) {
-        if (action.params) {
-          action.params.forEach(function(param) {
-            param.type = oDataTypeMap[param.type.toLowerCase()] || param.type;
-          });
-        }
-      });
-      
-      odataDef.entitySets[mdl.name + 's'] = {
-          entityType: broker.name + '.' + mdl.name
-      };
-
-    });
-    definition = odataDef;
-   // console.log(JSON.stringify(definition, null, '\t'));
+  this.load = function(definition) {
     if (definition && definition.namespace) {
       if (!model)
         model = {
@@ -233,7 +189,7 @@ function ODataModel(definition) {
 
         parseRelations();
       }
-      this.modelDefinition = definition;
+      
     } else {
       throw new Error('Invalid oData model definition.');
     }

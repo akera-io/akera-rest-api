@@ -1,76 +1,144 @@
-[
+{
+	"namespace": "demo.sports2000",
+	"entityTypes": 
 	{
-		"name": "TestModel",
-		"properties": 
+		"Customer": 
 		{
-			"name": 
+			"properties": 
 			{
-				"type": "character",
-				"key": true
-			}
+				"CustNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"SalesRep": 
+				{
+					"type": "Edm.String"
+				},
+
+				"Name": 
+				{
+					"type": "Edm.String"
+				},
+
+				"Country": 
+				{
+					"type": "Edm.String"
+				}
+			},
+
+			"methods": 
+			{
+				"getBalance": 
+				{
+					"type": "function",
+					"params": 
+					{
+						"custNum": 
+						{
+							"type": "Edm.String",
+							"direction": "in",
+							"required": true
+						},
+
+						"balance": 
+						{
+							"type": "Edm.Float",
+							"direction": "out"
+						}
+					}
+				},
+
+				"setSalesRep": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"salesRep": 
+						{
+							"type": "Edm.String",
+							"direction": "in",
+							"required": true
+						}
+					}
+				}
+			},
+
+			"key": 
+			[
+				"CustNum"
+			]
 		},
 
-		"methods": 
-		[
+		"Order": 
+		{
+			"properties": 
 			{
-				"name": "hello",
-				"params": 
-				[
-					{
-						"name": "name",
-						"direction": "in",
-						"type": "character"
-					},
+				"CustNum": 
+				{
+					"type": "Edm.Int32"
+				},
 
-					{
-						"name": "greeting",
-						"type": "character",
-						"direction": "out"
-					}
-				]
-			}
-		]
+				"OrderNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"SalesRep": 
+				{
+					"type": "Edm.String"
+				},
+
+				"OrderDate": 
+				{
+					"type": "Edm.Date"
+				}
+			},
+
+			"key": 
+			[
+				"OrderNum"
+			]
+		},
+
+		"OrderLine": 
+		{
+			"properties": 
+			{
+				"OrderNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"OrderLine": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"Qty": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"Amount": 
+				{
+					"type": "Edm.Int32"
+				}
+			},
+
+			"key": 
+			[
+				"OrderNum",
+				"OrderLine"
+			]
+		}
 	},
-
-	{
-		"name": "Customer",
-		"properties": 
-		{
-			"CustNum": 
-			{
-				"type": "Edm.Int32",
-				"key": true
-			},
-
-			"SalesRep": 
-			{
-				"type": "Edm.String"
-			},
-
-			"Name": 
-			{
-				"type": "Edm.String"
-			},
-
-			"Country": 
-			{
-				"type": "Edm.String"
-			}
+	"entitySets": {
+		"Customers": {
+			"entityType": "demo.sports2000.Customer"
 		},
-
-		"methods": 
-		[
-			{
-				"name": "getName",
-				"params": 
-				[
-					{
-						"name": "id",
-						"type": "integer",
-						"direction": "in"
-					}
-				]
-			}
-		]
+		"Orders": {
+			"entityType": "demo.sports2000.Order"
+		}
 	}
-]
+}
