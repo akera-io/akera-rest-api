@@ -1,0 +1,173 @@
+{
+	"namespace": "io.akera",
+	"entityTypes": 
+	{
+		"BusinessEntity": 
+		{
+			"abstract": true,
+			"methods": 
+			{
+				"read": 
+				{
+					"type": "function",
+					"params": 
+					{
+						"filter": 
+						{
+							"type": "Edm.String",
+							"direction": "in"
+						},
+
+						"top": 
+						{
+							"type": "Edm.Int",
+							"direction": "in"
+						},
+
+						"skip": 
+						{
+							"type": "Edm.Int",
+							"direction": "in"
+						},
+
+						"select": 
+						{
+							"type": "Edm.String",
+							"direction": "in"
+						},
+
+						"expand": 
+						{
+							"type": "Edm.String",
+							"direction": "in"
+						},
+
+						"inlinecount": 
+						{
+							"type": "Edm.Bool",
+							"direction": "in"
+						},
+
+						"return": 
+						{
+							"type": "Collection(Edm.Record)",
+							"direction": "out"
+						}
+					}
+				}
+			}
+		},
+
+		"UpdatableBusinessEntity": 
+		{
+			"abstract": true,
+			"base": "BusinessEntity",
+			"methods": 
+			{
+				"update": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"keys": 
+						{
+							"type": "Collection(Edm.String)",
+							"direction": "in"
+						},
+
+						"record": 
+						{
+							"type": "Edm.Record",
+							"direction": "in"
+						},
+
+						"return": 
+						{
+							"type": "Edm.String",
+							"direction": "out"
+						}
+					}
+				},
+
+				"create": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"record": 
+						{
+							"type": "Edm.Record",
+							"direction": "in"
+						},
+
+						"return": 
+						{
+							"type": "Edm.String",
+							"direction": "out"
+						}
+					}
+				},
+
+				"delete": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"keys": 
+						{
+							"type": "Collection(Edm.String)",
+							"direction": "in"
+						},
+
+						"return": 
+						{
+							"type": "Edm.String",
+							"direction": "out"
+						}
+					}
+				},
+
+				"save": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"keys": 
+						{
+							"type": "Collection(Edm.String)",
+							"direction": "in"
+						},
+
+						"records": 
+						{
+							"type": "Collection(Edm.Record)",
+							"direction": "in"
+						},
+
+						"return": 
+						{
+							"type": "Edm.String",
+							"direction": "out"
+						}
+					}
+				}
+			}
+		},
+		"DataBaseTable": 
+		{
+			"abstract": true,
+			"base": "UpdatableBusinessEntity",
+			"properties": 
+			{
+				"Table": 
+				{
+					"type": "Edm.String"
+				},
+				"Updatable": 
+				{
+					"type": "Edm.Bool"
+				}
+			}
+		}
+	}
+}
