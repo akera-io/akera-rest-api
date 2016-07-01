@@ -54,9 +54,9 @@ import org.apache.olingo.commons.api.format.ContentType;
  */
 public class OdataTest {
 	public static void main(String[] paras) throws Exception {
-
+		
 		try {
-			String serviceUrl = "http://10.10.10.6:8484/sports/rest/api/odata";
+			String serviceUrl = "http://localhost:8383/sports/rest/api/odata";
 
 			ODataClient client = ODataClientFactory.getClient();
 
@@ -75,7 +75,7 @@ public class OdataTest {
 				}
 
 				Map<String, URI> entitySets = serviceDocument.getEntitySets();
-
+				
 				for (Entry<String, URI> entitySet : entitySets.entrySet()) {
 					System.out.println(entitySet.getKey());
 

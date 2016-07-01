@@ -21,7 +21,7 @@ import org.junit.Test;
 public class MetaData {
 
 	ODataClient client;
-	String serviceRoot = "http://10.10.10.6:8484/sports/rest/api/odata";
+	String serviceRoot = "http://localhost:8383/sports/rest/api/odata";
 
 	@Before
 	public void setUp() throws Exception {
