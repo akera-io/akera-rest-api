@@ -38,8 +38,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.olingo.client.api.ODataClient;
+import org.apache.olingo.client.api.communication.request.retrieve.ODataEntitySetRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataServiceDocumentRequest;
 import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse;
+import org.apache.olingo.client.api.domain.ClientEntity;
+import org.apache.olingo.client.api.domain.ClientEntitySet;
+import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.api.domain.ClientServiceDocument;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.edm.Edm;
@@ -49,14 +53,11 @@ import org.apache.olingo.commons.api.format.ContentType;
  *
  */
 public class OdataTest {
-	public static final String METADATA = "$metadata";
-
 	public static void main(String[] paras) throws Exception {
 
 		try {
-			String serviceUrl = "http://10.10.10.6:8484/sports/rest/api";
-//			String serviceUrl = "http://services.odata.org/V4/Northwind/Northwind.svc";
-			
+			String serviceUrl = "http://10.10.10.6:8484/sports/rest/api/odata";
+
 			ODataClient client = ODataClientFactory.getClient();
 
 			ODataServiceDocumentRequest req = client.getRetrieveRequestFactory().getServiceDocumentRequest(serviceUrl);
@@ -64,22 +65,9 @@ public class OdataTest {
 
 			ODataRetrieveResponse<ClientServiceDocument> res = req.execute();
 
-			// InputStream is = res.getRawResponse();
-			// DataInputStream din = new DataInputStream(is);
-			//
-			// String line = null;
-			//
-			// while ((line = din.readLine()) != null) {
-			// System.out.println(line);
-			// }
-
 			if (res.getStatusCode() == 200) {
 
-				System.out.println("service doc..." + res.getBody());
-				
 				ClientServiceDocument serviceDocument = res.getBody();
-				System.out.println("service doc...");
-
 				Collection<String> entitySetNames = serviceDocument.getEntitySetNames();
 
 				for (String entity : entitySetNames) {
@@ -87,6 +75,30 @@ public class OdataTest {
 				}
 
 				Map<String, URI> entitySets = serviceDocument.getEntitySets();
+
+				for (Entry<String, URI> entitySet : entitySets.entrySet()) {
+					System.out.println(entitySet.getKey());
+
+					if (entitySet.getKey().equalsIgnoreCase("customers")) {
+						ODataEntitySetRequest<ClientEntitySet> entityReq = client.getRetrieveRequestFactory()
+								.getEntitySetRequest(entitySet.getValue());
+
+						ClientEntitySet set = entityReq.execute().getBody();
+
+						for (ClientEntity row : set.getEntities()) {
+							System.out.println("Customer no# " + row.getProperty("CustNum").getValue());
+
+							for (ClientProperty prop : row.getProperties()) {
+								if (!prop.getName().equals("CustNum"))
+									System.out.println(prop.getName() + " = " + prop.getValue());
+							}
+
+							System.out.println("-------------------------------------------");
+						}
+					}
+
+				}
+
 				Map<String, URI> singletons = serviceDocument.getSingletons();
 				Map<String, URI> functionImports = serviceDocument.getFunctionImports();
 			}
