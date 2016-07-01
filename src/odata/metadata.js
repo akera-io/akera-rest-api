@@ -7,8 +7,52 @@
 var builder = require('xmlbuilder');
 var util = require('./util.js');
 
-module.exports = function(model) {
-  return buildMetadata(model);
+module.exports = MetadataBuilder;
+
+function MetadataBuilder(serviceUrl) {
+  this.serviceUrl = serviceUrl;
+  
+  this.buildModel = buildMetadata;
+  this.buildCollections = buildCollections;
+}
+
+function buildCollections(model) {
+ 
+  var xml = builder.create({
+    'service' : {
+      '@xmlns' : 'http://www.w3.org/2007/app',
+      '@xmlns:atom' : 'http://www.w3.org/2005/Atom',
+      '@xmlns:m' : 'http://docs.oasis-open.org/odata/ns/metadata',
+      '@xml:base' : this.serviceUrl,
+      '@m:context' : this.serviceUrl + '$metadata'
+    }
+  });
+
+  var workspaceNode = xml.ele('workspace');
+
+  var namespaces = model.getNamespaces();
+
+  namespaces.forEach(function(namespace) {
+    var ns = model.getNamespace(namespace);
+    if (ns.entitySets) {
+      Object.keys(ns.entitySets).forEach(function(eSet) {
+        workspaceNode.ele('atom:title', {
+          'type' : 'text'
+        }, 'Default');
+        workspaceNode.ele('collection', {
+          'href' : eSet
+        }).ele('atom:title', {
+          'type' : 'text'
+        }, eSet);
+      });
+    }
+  });
+
+  xml.end({
+    pretty : true
+  });
+
+  return xml.toString();
 };
 
 function serializeProperty(name, property, entityNode) {
