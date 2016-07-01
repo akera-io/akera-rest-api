@@ -1,9 +1,13 @@
 {
-	"namespace": "demo.sports2000",
+	"namespace": "sports2000",
 	"entityTypes": 
 	{
 		"Customer": 
 		{
+			"base": "DatabaseTable",
+			"updateable": true,
+			"table": "Customer",
+			"baseType": "io.akera.UpdatableBusinessEntity",
 			"properties": 
 			{
 				"CustNum": 
@@ -144,12 +148,12 @@
 	{
 		"Customers": 
 		{
-			"entityType": "demo.sports2000.Customer"
+			"entityType": "Customer"
 		},
 
 		"Orders": 
 		{
-			"entityType": "demo.sports2000.Order"
+			"entityType": "Order"
 		}
 	}
 }

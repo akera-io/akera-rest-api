@@ -34,8 +34,10 @@ function buildCollections(model) {
 
   namespaces.forEach(function(namespace) {
     var ns = model.getNamespace(namespace);
+    ns.namespace = namespace;
     if (ns.entitySets) {
       Object.keys(ns.entitySets).forEach(function(eSet) {
+        var set = ns.entitySets[eSet];
         workspaceNode.ele('atom:title', {
           'type' : 'text'
         }, 'Default');
@@ -43,7 +45,8 @@ function buildCollections(model) {
           'href' : eSet
         }).ele('atom:title', {
           'type' : 'text'
-        }, eSet);
+        }, set.description || eSet);
+        serializeCollectionFnImports(util.getMethods(util.getEntityType(eSet, ns), 'function'), workspaceNode);
       });
     }
   });
@@ -54,6 +57,16 @@ function buildCollections(model) {
 
   return xml.toString();
 };
+
+function serializeCollectionFnImports(methods,  workspaceNode) {
+  methods.forEach(function(method) {
+    workspaceNode.ele({
+      'm:function-import': {
+        '@href': method.name
+      }
+    }).ele('atom:title', {}, method.definition.description || method.name);
+  });
+}
 
 function serializeProperty(name, property, entityNode) {
   if (property.navigation === true) {
@@ -111,8 +124,8 @@ function serializeEntityNavigations(model, entityType, setNode) {
   }
 }
 
-function serializeMethod(method, entityType, entityNode, schemaNode) {
-  var methodNode = method.definition.type === 'action' ? serializeActionNode(method, schemaNode) : serializeFunctionNode(method, entityNode, schemaNode);
+function serializeMethod(method, entityType, schemaNode) {
+  var methodNode = method.definition.type === 'action' ? serializeActionNode(method, schemaNode) : serializeFunctionNode(method, schemaNode);
   var params = util.getMethodParams(method.definition);
  
   if (methodNode)
@@ -139,7 +152,7 @@ function serializeActionNode(method, schemaNode) {
   return actionNode;
 }
 
-function serializeFunctionNode(method, entityNode, schemaNode) {
+function serializeFunctionNode(method, schemaNode) {
   var outParams = [];
   
   var params = util.getMethodParams(method.definition);
@@ -151,7 +164,7 @@ function serializeFunctionNode(method, entityNode, schemaNode) {
   if (outParams.length < 1)
     return null;
   
-  var functionNode = entityNode.ele({
+  var functionNode = schemaNode.ele({
     'Function': {
       '@Name': method.name,
       '@IsBound': method.definition.isBound || false
@@ -229,7 +242,13 @@ function buildSchemaMetadata(schema, schemaNode, namespace) {
         '@Name' : typeKey
       }
     });
-
+    
+    if (schema.entityTypes[typeKey].baseType) {
+      //if no namespace specified assume same as current schema
+      if (schema.entityTypes[typeKey].baseType.split('.').length === 1)
+        schema.entityTypes[typeKey].baseType = namespace + '.' + schema.entityTypes[typeKey].baseType;
+      entityNode.att('BaseType', schema.entityTypes[typeKey].baseType);
+    }
     if (schema.entityTypes[typeKey].key) {
       var keyNode = entityNode.ele('Key');
 
@@ -251,7 +270,7 @@ function buildSchemaMetadata(schema, schemaNode, namespace) {
     
     var methods = util.getMethods(schema.entityTypes[typeKey]);
     methods.forEach(function(method) {
-        serializeMethod(method, schema.entityTypes[typeKey], entityNode, schemaNode);
+        serializeMethod(method, schema.entityTypes[typeKey], schemaNode);
     });
   }
 
@@ -263,6 +282,13 @@ function buildSchemaMetadata(schema, schemaNode, namespace) {
         }
       });
   
+      var type = schema.complexTypes[typeKey];
+      
+      if (type.baseType) {
+        if (type.baseType.split('.').length === 1)
+          type.baseType = namespace + '.' + type.baseType;
+        complexNode.att('BaseType', type.baseType);
+      }
       for ( var propKey in schema.complexTypes[typeKey]) {
         serializeProperty(propKey, schema.complexTypes[typeKey][propKey],
             complexNode);

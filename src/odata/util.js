@@ -106,7 +106,8 @@ module.exports = {
     
     var model = require('./model.js');
     model = new model();
-    
+    var baseModel = require('./model/AkeraModel.json');
+    model.load(baseModel);
     
     if (fs.statSync(modelPath).isDirecotry) {  
       var files = fs.readdirSync().map(function(filename) {

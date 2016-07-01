@@ -132,12 +132,6 @@
 					"type": "action",
 					"params": 
 					{
-						"keys": 
-						{
-							"type": "Collection(Edm.String)",
-							"direction": "in"
-						},
-
 						"records": 
 						{
 							"type": "Collection(Edm.Record)",
@@ -150,22 +144,6 @@
 							"direction": "out"
 						}
 					}
-				}
-			}
-		},
-		"DataBaseTable": 
-		{
-			"abstract": true,
-			"base": "UpdatableBusinessEntity",
-			"properties": 
-			{
-				"Table": 
-				{
-					"type": "Edm.String"
-				},
-				"Updatable": 
-				{
-					"type": "Edm.Bool"
 				}
 			}
 		}
