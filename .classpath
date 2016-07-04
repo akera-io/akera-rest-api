@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
@@ -26,5 +26,6 @@
 	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-commons-core-4.2.0.jar"/>
 	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.codehaus.woodstox-stax2-api-3.1.4.jar"/>
 	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.slf4j-slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

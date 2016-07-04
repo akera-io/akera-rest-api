@@ -18,7 +18,7 @@ function ODataRouter(config, router) {
    
    this.checkMetadataBuilder = function(req) {
      if (!this.metadataBuilder) {
-       this.serviceUrl = req.protocol + '://' + req.get('host') + self.httpPrefix;
+       this.serviceUrl = req.protocol + '://' + req.get('host') + '/' + self.broker.name  + self.httpPrefix;
        this.metadataBuilder = new metadataBuilder(this.serviceUrl);
      }
    };
