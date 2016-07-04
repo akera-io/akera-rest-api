@@ -148,12 +148,12 @@
 	{
 		"Customers": 
 		{
-			"entityType": "Customer"
+			"entityType": "sports2000.Customer"
 		},
 
 		"Orders": 
 		{
-			"entityType": "Order"
+			"entityType": "sports2000.Order"
 		}
 	}
 }

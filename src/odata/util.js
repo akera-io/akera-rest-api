@@ -2,6 +2,7 @@ var akera = require('akera-api');
 var f = akera.query.filter;
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 
 module.exports = {
   getEntityType : function(collection, model) {
@@ -14,6 +15,23 @@ module.exports = {
     var entitySet = model.entitySets[collection];
     var entityName = entitySet.entityType.replace(model.namespace + ".", "");
     return entityName;
+  },
+  getEntityNameFromRoot: function(collection, model) {
+    var namespaces = model.getNamespaces();
+    
+    for(var i=0; i<namespaces.length; i++) {
+      var ns = model.getNamespace(namespaces[i]);
+      
+      var eSet = ns.entitySets && ns.entitySets[collection];
+      //console.log(eSet);
+      if (eSet) {
+        return { 
+          name: eSet.entityType && eSet.entityType.replace(namespaces[i] + '.', ''),
+          namespace: namespaces[i]
+        };
+      }
+    }
+    return null;
   },
   transformAkeraQuery : function(aQuery, query, collection, model) {
     var filter = query.$filter;
@@ -157,6 +175,9 @@ module.exports = {
         });
     });
     return methods;
+  },
+  parseUrl: function(req) {
+    return url.parse(req.url);
   }
 };
 

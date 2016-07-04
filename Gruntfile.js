@@ -30,6 +30,12 @@ module.exports = function(grunt) {
               src: ['*.js'],
               dest: 'lib/odata/',
               ext: '.js'
+            }, {
+              expand: true,
+              cwd: 'src/odata/crud',
+              src: ['*.js'],
+              dest: 'lib/odata/crud',
+              ext: '.js'
             }]
       }
     },
