@@ -4,10 +4,7 @@
 	{
 		"Customer": 
 		{
-			"base": "DatabaseTable",
-			"updateable": true,
-			"table": "Customer",
-			"baseType": "io.akera.UpdatableBusinessEntity",
+			"tableName": "Customer",
 			"properties": 
 			{
 				"CustNum": 
@@ -19,7 +16,6 @@
 				{
 					"type": "Edm.String"
 				},
-
 				"Name": 
 				{
 					"type": "Edm.String"
@@ -102,6 +98,11 @@
 				"OrderDate": 
 				{
 					"type": "Edm.Date"
+				},
+				
+				"Lines": {
+					"type": "OrderLine",
+					"containment": true
 				}
 			},
 
@@ -115,9 +116,10 @@
 		{
 			"properties": 
 			{
-				"OrderNum": 
+				"OrderID": 
 				{
-					"type": "Edm.Int32"
+					"type": "Edm.Int32",
+					"fieldName": "OrderNum"
 				},
 
 				"OrderLine": 
@@ -133,6 +135,13 @@
 				"Amount": 
 				{
 					"type": "Edm.Int32"
+				},
+				
+				"Order": {
+					"type": "Order",
+					"constraint": {
+						"OrderID": "OrderNum"
+					}
 				}
 			},
 
@@ -143,7 +152,13 @@
 			]
 		}
 	},
-
+	"entityRelations": {
+		"CustomerOrders": {
+			"source": "Customer",
+			"target": "Order",
+			""
+		}
+	},
 	"entitySets": 
 	{
 		"Customers": 

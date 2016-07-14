@@ -1,5 +1,3 @@
-var akeraApi = require('akera-api');
-var util = require('../util.js');
 
 function BusinessEntity() {
 }
