@@ -14,9 +14,9 @@ function AkeraRestApi(akeraWebApp) {
       }
 
       res.status(500).send({
-          message : err
+        message : err
       });
-      
+
       akeraApp.log('error', err);
     }
   };
@@ -32,59 +32,72 @@ function AkeraRestApi(akeraWebApp) {
         try {
           callParams = JSON.parse(req.query.parameters);
         } catch (err) {
-          return self.error('Invalid procedure parameters format, must be a JSON array.', res, akeraApp);
+          return self.error(
+            'Invalid procedure parameters format, must be a JSON array.', res,
+            akeraApp);
         }
       }
     } else {
       callProc = req.body.procedure || req.body.call && req.body.call.procedure;
       callParams = req.body.parameters || req.body.call && req.body.call.parameters;
     }
-    
+
     if (!callProc) {
-      return self.error('Invalid or no procedure details specified.', res, akeraApp);
+      return self.error('Invalid or no procedure details specified.', res,
+        akeraApp);
     }
 
     try {
-      akeraApi.connect(broker).then(function(conn) {
-        try {
-          var call = conn.call.procedure(callProc);
+      akeraApi
+        .connect(broker)
+        .then(
+          function(conn) {
+            try {
+              var call = conn.call.procedure(callProc);
 
-          if (callParams instanceof Array) {
-            var parameters = [];
+              if (callParams instanceof Array) {
+                var parameters = [];
 
-            callParams.forEach(function(param) {
+                callParams
+                  .forEach(function(param) {
 
-              param.dataType = param.dataType || 'character';
-              param.dataType = param.dataType.toLowerCase();
+                    param.dataType = typeof param.dataType === 'string' ? param.dataType
+                      .toLowerCase()
+                      : p.data_type.character;
 
-              switch (param.type) {
-              case 'inout':
-                parameters.push(p.inout(param.value, param.dataType));
-                break;
-              case 'output':
-                parameters.push(p.output(param.dataType));
-                break;
-              default:
-                parameters.push(p.input(param.value, param.dataType));
+                    switch (param.type) {
+                      case 'io':
+                      case 'inout':
+                      case 'input-output':
+                        parameters.push(p.inout(param.value, param.dataType,
+                          param.json));
+                        break;
+                      case 'o':
+                      case 'out':
+                      case 'output':
+                        parameters.push(p.output(param.dataType, param.json));
+                        break;
+                      default:
+                        parameters.push(p.input(param.value, param.dataType));
+                    }
+                  });
+
+                call.parameters.apply(call, parameters);
               }
-            });
 
-            call.parameters.apply(call, parameters);
-          }
-
-          call.run().then(function(response) {
-            conn.disconnect();
-            res.status(200).send(response);
+              call.run().then(function(response) {
+                conn.disconnect();
+                res.status(200).send(response);
+              }, function(err) {
+                conn.disconnect();
+                self.error(err, res, akeraApp);
+              });
+            } catch (err) {
+              self.error(err, res, akeraApp);
+            }
           }, function(err) {
-            conn.disconnect();
             self.error(err, res, akeraApp);
           });
-        } catch (err) {
-          self.error(err, res, akeraApp);
-        }
-      }, function(err) {
-        self.error(err, res, akeraApp);
-      });
     } catch (err) {
       self.error(err, res, akeraApp);
     }
@@ -92,7 +105,8 @@ function AkeraRestApi(akeraWebApp) {
 
   this.init = function(config, router) {
 
-    if (!router || !router.__app || typeof router.__app.require !== 'function') {
+    if (!router || !router.__app || typeof router.__app.require !== 'function')
+    {
       throw new Error('Invalid Akera web service router.');
     }
 
