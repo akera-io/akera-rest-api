@@ -40,13 +40,21 @@ $ npm install akera-rest-api
   
   The interface can then be used to call business logic procedures on the broker by making 
   HTTP `POST` requests to `http://[host]/[broker]/rest-api/` and send call information using 
-  the `call` request parameter as a JSON object with following structure:
+  the `call` request parameter as a JSON object with following structure - wrapping it all in a `call` object is optional:
 
 	- `procedure`: the business logic procedure name
-	- `parameters`: array of optional procedure parameters, must match the procedure parameters else an error will be thrown back. Each parameter entry has the following structure:
-		- `dataType`: parameter data type, defaults to `character`
-		- `type`: parameter type/direction, valid values: `input`, `output`, `inout`, defaults to `input`
+	- `parameters`: array of optional procedure parameters, must match the procedure parameters else an error will be thrown back. 
+		Each parameter entry has the following structure:
+		- `dataType`: parameter data type
+			- valid values: `character`, `date`, `datetime`, `dataset`, `decimal`, `integer`, `int64`, `logical`, `longchar`, `memptr`, `table`
+			- defaults to `character`
+		- `type`: parameter type/direction
+			- valid values: `input` | `i`, `input-output` | `inout` | `io`, `output` | `out` | `o`
+			- defaults to `input`
 		- `value`: parameter value for input/input-output parameters
+		- `json`: for output/input-output parameters of type character/longchar.
+			If set to true the value is sent as a JSON object instead of encoding it as a string. 
+			Dataset and table parameters are always sent as JSON objects.
   
   The request must have the `Content-Type` header value set to `application/json` in order to be 
   correctly interpreted by the REST service handler.
@@ -55,14 +63,13 @@ $ npm install akera-rest-api
   available through the REST API interface.
   
   All Progress primitive data types are supported as input/output/input-output parameters, for output complex data types like
-  `temp-table` and `dataset` are also supported.
+  `table` and `dataset` are also supported.
   	
 ```json
 	{ "call": {
 			"procedure": "crm/getCustomerBalance.p",
 			"parameters": [
 				{
-					"dataType": "integer",
 					"value": 12
 				},
 				{
@@ -82,19 +89,19 @@ or
 
 ```json
 	{
-		"procedure": "crm/getCustomerBalance.p",
+		"procedure": "crm/getCustomerComplaints.p",
 		"parameters": [
 			{
-				"dataType": "integer",
-				"value": 12
+				"value": 12 // customer number
+			},
+			{
+				"type": "input-output",
+				"dataType": "integer" // start record
 			},
 			{
 				"type": "output",
-				"dataType": "decimal"
-			},
-			{
-				"type": "output",
-				"dataType": "decimal"
+				"dataType": "longchar",
+				"json": true
 			}
 		]
 	}
@@ -108,7 +115,8 @@ or
   As of version 1.0.8 the interface also support `GET` requests with `procedure` and `parameters` values passed through 
   the query string value, also on `POST` requests the `call` wrapper object is no longer mandatory - `procedure` and `parameters` 
   can be sent directly into the root JSON object.
-   
+  
+  As of version 1.0.10 the interface also support `json` flag for output/input-output string parameters (characters/longchar). 
 
 ## License
 	
