@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "akera-api": ">=1.0.15",
+    "akera-api": ">=1.0.20",
     "methods": "^1.1.2",
     "odata-parser": "^1.4.1",
     "path-to-regexp": "^1.5.3",

@@ -66,24 +66,27 @@ function AkeraRestApi(akeraWebApp) {
                 callParams
                   .forEach(function(param) {
 
-                    param.dataType = typeof param.dataType === 'string' ? param.dataType
+                    var direction = param.type || 'i';
+
+                    param.type = typeof param.dataType === 'string' ? param.dataType
                       .toLowerCase()
                       : p.data_type.character;
 
-                    switch (param.type) {
+                    delete param.dataType;
+
+                    switch (direction) {
                       case 'io':
                       case 'inout':
                       case 'input-output':
-                        parameters.push(p.inout(param.value, param.dataType,
-                          param.json));
+                        parameters.push(p.inout(param));
                         break;
                       case 'o':
                       case 'out':
                       case 'output':
-                        parameters.push(p.output(param.dataType, param.json));
+                        parameters.push(p.output(param));
                         break;
                       default:
-                        parameters.push(p.input(param.value, param.dataType));
+                        parameters.push(p.input(param));
                     }
                   });
 
