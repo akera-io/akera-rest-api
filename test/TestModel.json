@@ -1,0 +1,174 @@
+{
+	"namespace": "sports2000",
+	"entityTypes": 
+	{
+		"Customer": 
+		{
+			"tableName": "Customer",
+			"properties": 
+			{
+				"CustNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"SalesRep": 
+				{
+					"type": "Edm.String"
+				},
+				"Name": 
+				{
+					"type": "Edm.String"
+				},
+
+				"Country": 
+				{
+					"type": "Edm.String"
+				}
+			},
+
+			"methods": 
+			{
+				"getBalance": 
+				{
+					"type": "function",
+					"params": 
+					{
+						"custNum": 
+						{
+							"type": "Edm.String",
+							"direction": "in",
+							"required": true
+						},
+
+						"balance": 
+						{
+							"type": "Edm.Float",
+							"direction": "out"
+						},
+
+						"negative": 
+						{
+							"type": "Edm.Boolean",
+							"direction": "out"
+						}
+					}
+				},
+
+				"setSalesRep": 
+				{
+					"type": "action",
+					"params": 
+					{
+						"salesRep": 
+						{
+							"type": "Edm.String",
+							"direction": "in",
+							"required": true
+						}
+					}
+				}
+			},
+
+			"key": 
+			[
+				"CustNum"
+			]
+		},
+
+		"Order": 
+		{
+			"properties": 
+			{
+				"CustNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"OrderNum": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"SalesRep": 
+				{
+					"type": "Edm.String"
+				},
+
+				"OrderDate": 
+				{
+					"type": "Edm.Date"
+				},
+				
+				"Lines": {
+					"type": "OrderLine",
+					"containment": true
+				}
+			},
+
+			"key": 
+			[
+				"OrderNum"
+			]
+		},
+
+		"OrderLine": 
+		{
+			"properties": 
+			{
+				"OrderID": 
+				{
+					"type": "Edm.Int32",
+					"fieldName": "OrderNum"
+				},
+
+				"OrderLine": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"Qty": 
+				{
+					"type": "Edm.Int32"
+				},
+
+				"Amount": 
+				{
+					"type": "Edm.Int32"
+				},
+				
+				"Order": {
+					"type": "Order",
+					"constraint": {
+						"OrderID": "OrderNum"
+					}
+				}
+			},
+
+			"key": 
+			[
+				"OrderNum",
+				"OrderLine"
+			]
+		}
+	},
+	"entityRelations": {
+		"CustomerOrders": {
+			"source": "Customer",
+			"target": "Order",
+			""
+		}
+	},
+	"entitySets": 
+	{
+		"Customers": 
+		{
+			"entityType": "sports2000.Customer"
+		},
+
+		"Orders": 
+		{
+			"entityType": "sports2000.Order"
+		}
+	}
+}

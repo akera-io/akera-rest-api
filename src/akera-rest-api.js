@@ -21,6 +21,10 @@ function AkeraRestApi(akeraWebApp) {
     }
   };
 
+  this.getModelRoute = function(baseRoute, model) {
+    return baseRoute + '/' + model.name;
+  };
+
   this.handleRequest = function(req, res) {
     var broker = req.broker;
     var callProc = null;
@@ -39,7 +43,8 @@ function AkeraRestApi(akeraWebApp) {
       }
     } else {
       callProc = req.body.procedure || req.body.call && req.body.call.procedure;
-      callParams = req.body.parameters || req.body.call && req.body.call.parameters;
+      callParams = req.body.parameters || req.body.call
+        && req.body.call.parameters;
     }
 
     if (!callProc) {
@@ -61,24 +66,27 @@ function AkeraRestApi(akeraWebApp) {
                 callParams
                   .forEach(function(param) {
 
-                    param.dataType = typeof param.dataType === 'string' ? param.dataType
+                    var direction = param.type || 'i';
+
+                    param.type = typeof param.dataType === 'string' ? param.dataType
                       .toLowerCase()
                       : p.data_type.character;
 
-                    switch (param.type) {
+                    delete param.dataType;
+
+                    switch (direction) {
                       case 'io':
                       case 'inout':
                       case 'input-output':
-                        parameters.push(p.inout(param.value, param.dataType,
-                          param.json));
+                        parameters.push(p.inout(param));
                         break;
                       case 'o':
                       case 'out':
                       case 'output':
-                        parameters.push(p.output(param.dataType, param.json));
+                        parameters.push(p.output(param));
                         break;
                       default:
-                        parameters.push(p.input(param.value, param.dataType));
+                        parameters.push(p.input(param));
                     }
                   });
 
@@ -103,6 +111,23 @@ function AkeraRestApi(akeraWebApp) {
     }
   };
 
+  this.setupInterface = function(type, config, router) {
+    type = type || 'rest';
+
+    switch (type) { // TODO: support rest and jsdo interfaces
+      case 'odata':
+        var odataRouter = require('./odata/odata-router.js');
+        odataRouter(config, router);
+        break;
+      case 'rest':
+        router.post(config.route, self.handleRequest);
+        router.get(config.route, self.handleRequest);
+        break;
+      default:
+        throw new Error('Invalid api interface specified');
+    }
+  };
+
   this.init = function(config, router) {
 
     if (!router || !router.__app || typeof router.__app.require !== 'function')
@@ -114,9 +139,13 @@ function AkeraRestApi(akeraWebApp) {
     akeraApp = router.__app;
     config.route = akeraApp.getRoute(config.route || '/rest/api/');
 
-    router.post(config.route, self.handleRequest);
-    router.get(config.route, self.handleRequest);
-
+    if (config.serviceInterface instanceof Array) {
+      config.serviceInterface.forEach(function(interfaceName) {
+        self.setupInterface(interfaceName, config, router);
+      });
+    } else {
+      self.setupInterface(config.serviceInterface, config, router);
+    }
   };
 
   if (akeraWebApp !== undefined) {
@@ -128,3 +157,7 @@ AkeraRestApi.init = function(config, router) {
   var akeraRestApi = new AkeraRestApi();
   akeraRestApi.init(config, router);
 };
+
+function setupModels(modelPath, route, router) {
+
+}

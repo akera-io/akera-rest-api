@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml-aalto-xml-0.9.10.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml.jackson.core-jackson-annotations-2.4.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml.jackson.core-jackson-core-2.4.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml.jackson.core-jackson-databind-2.4.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml.jackson.dataformat-jackson-dataformat-xml-2.4.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/com.fasterxml.jackson.module-jackson-module-jaxb-annotations-2.4.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/commons-codec-commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/commons-io-commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/commons-logging-commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.commons-commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.httpcomponents-httpclient-4.2.6.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.httpcomponents-httpcore-4.2.5.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-client-api-4.2.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-client-core-4.2.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-client-proxy-4.2.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-commons-api-4.2.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.apache.olingo-odata-commons-core-4.2.0.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.codehaus.woodstox-stax2-api-3.1.4.jar"/>
+	<classpathentry kind="lib" path="test/lib/Olingo-OData-Client-for-Java-4.2.0-lib/org.slf4j-slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

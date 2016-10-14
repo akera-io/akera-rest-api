@@ -24,7 +24,29 @@ module.exports = function(grunt) {
                 src: ['*.js'],
                 dest: 'lib/',
                 ext: '.js'
+            }, {
+              expand: true,
+              cwd: 'src/odata',
+              src: ['*.js'],
+              dest: 'lib/odata/',
+              ext: '.js'
+            }, {
+              expand: true,
+              cwd: 'src/odata/crud',
+              src: ['*.js'],
+              dest: 'lib/odata/crud',
+              ext: '.js'
             }]
+      }
+    },
+    copy: {
+      model: {
+        expand: true,
+        cwd: 'src/odata/model/',
+        src: '**',
+        flatten: true,
+        filter: 'isFile',
+        dest: 'lib/odata/model/'
       }
     },
     jshint: {
@@ -61,8 +83,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-
+  grunt.loadNpmTasks('grunt-contrib-copy');
   // Default task.
-  grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('default', ['uglify', 'copy']);
 
 };
