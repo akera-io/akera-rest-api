@@ -5,7 +5,7 @@
     "email": "radu.nicoara@acorn.ro"
   },
   "homepage": "http://akera.io",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Akera.io REST API service",
   "license": {
     "type": "MIT",
@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "akera-api": ">=1.0.20",
+    "akera-api": ">=1.0.21",
     "methods": "^1.1.2",
     "odata-parser": "^1.4.1",
     "path-to-regexp": "^1.5.3",
