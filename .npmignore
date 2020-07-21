@@ -1,7 +1,5 @@
-\coverage\
-\node_modules\
-\src\
-\doc\
-\build\
-.settings
+/coverage/
+/node_modules/
+/src/
 .project
+.settings

@@ -1,7 +1,5 @@
-module.exports = ODataModel;
-var path = require('path');
 
-var oDataTypeMap = {
+const oDataTypeMap = {
     character : 'Edm.String',
     integer : 'Edm.Int32',
     logical : 'Edm.Boolean',
@@ -13,32 +11,34 @@ var oDataTypeMap = {
     timestamp : 'Edm.DateTime'
   };
 
-function ODataModel(definition) {
-  var self = this;
-  var model = null;
+export class ODataModel {
+   model = null;
+  definition:string;
+  
 
-  var checkLoaded = function(namespace) {
-    if (!model) {
+
+    public checkLoaded(namespace: string | number) {
+    if (!this.model) {
       throw new Error('Model not loaded.');
     }
 
-    if (!model.schemas[namespace]) {
+    if (!this.model.schemas[namespace]) {
       throw new Error('Namespace not found in model definition.');
     }
   };
 
-  var parseRelations = function() {
-    if (model && model.entityRelations) {
-      model.entityRelations.filter(function(rel) {
+  parseRelations() {
+    if (this.model && this.model.entityRelations) {
+      this.model.entityRelations.filter(function(rel) {
         return !rel.__processed;
       }).forEach(
           function(rel) {
-            var parent = null;
-            var child = null;
+            let parent = null;
+            let child = null;
 
             try {
-              parent = self.getType(rel.from);
-              child = self.getType(rel.to);
+              parent = this.getType(rel.from);
+              child = this.getType(rel.to);
             } catch (e) {
               // one of the relation's ends was not loaded yet
               return;
@@ -87,28 +87,28 @@ function ODataModel(definition) {
 
   };
 
-  this.getNamespaces = function() {
-    return model ? Object.keys(model.schemas) : [];
+   getNamespaces() {
+    return this.model ? Object.keys(this.model.schemas) : [];
   };
 
-  this.getNamespace = function(namespace) {
-    checkLoaded(namespace);
+    getNamespace(namespace:string) {
+    this.checkLoaded(namespace);
 
-    return model.schemas[namespace];
+    return this.model.schemas[namespace];
   };
 
-  this.hasNamespace = function(fullName) {
+  hasNamespace(fullName:string) {
     return (fullName && fullName.indexOf('.') != -1);
   };
 
-  this.getFullName = function(name, namespace) {
+  getFullName(name:string, namespace:string) {
     return name && !this.hasNamespace(name) && namespace ? namespace + '.'
         + name : name;
   };
 
-  this.getClassInfo = function(fullName, namespace) {
+  getClassInfo(fullName:string, namespace:string) {
     if (this.hasNamespace(fullName)) {
-      var idx = fullName.lastIndexOf('.');
+      const idx = fullName.lastIndexOf('.');
 
       return {
         namespace : fullName.substring(0, idx),
@@ -123,22 +123,22 @@ function ODataModel(definition) {
     };
   };
 
-  this.load = function(definition) {
+    typeEntity(definition: { namespace: string | number; entityTypes: { [x: string]: any; }; entitySets: { [x: string]: any; }; entityRelations: any[]; }) {
     if (definition && definition.namespace) {
-      if (!model)
-        model = {
+      if (!this.model)
+        this.model = {
           schemas : {}
         };
 
-      if (model.schemas[definition.namespace]) {
+      if (this.model.schemas[definition.namespace]) {
         throw new Error('Namespace already loaded.');
       }
 
-      model.schemas[definition.namespace] = {
+      this.model.schemas[definition.namespace] = {
         model : this
       };
 
-      var schema = model.schemas[definition.namespace];
+      const schema = this.model.schemas[definition.namespace];
 
       if (definition.entityTypes) {
         schema.entityTypes = {};
@@ -146,7 +146,7 @@ function ODataModel(definition) {
         Object.keys(definition.entityTypes).forEach(
             function(key) {
               // if not fully qualified type assume same namespace
-              if (self.hasNamespace(key)) {
+              if (this.hasNamespace(key)) {
                 throw new Error(
                     'Types can only be defined within the same namespace: '
                         + key);
@@ -162,10 +162,10 @@ function ODataModel(definition) {
 
         Object.keys(definition.entitySets).forEach(
             function(key) {
-              var entity = definition.entitySets[key];
+              const entity = definition.entitySets[key];
 
               // if not fully qualified type assume same namespace
-              entity.entityType = self.getFullName(entity.entityType,
+              entity.entityType = this.getFullName(entity.entityType,
                   definition.namespace);
 
               schema.entitySets[key] = entity;
@@ -174,20 +174,20 @@ function ODataModel(definition) {
 
       if (definition.entityRelations) {
         // relations can well be from different namespaces
-        if (!model.entityRelations)
-          model.entityRelations = [];
+        if (!this.model.entityRelations)
+          this.model.entityRelations = [];
 
         definition.entityRelations
             .forEach(function(relation) {
               // if not fully qualified type assume same namespace
-              relation.from = self.getFullName(relation.from,
+              relation.from = this.getFullName(relation.from,
                   definition.namespace);
-              relation.to = self.getFullName(relation.to, definition.namespace);
+              relation.to = this.getFullName(relation.to, definition.namespace);
 
-              model.entityRelations.push(relation);
+              this.model.entityRelations.push(relation);
             });
 
-        parseRelations();
+        this.parseRelations();
       }
       
     } else {
@@ -195,58 +195,58 @@ function ODataModel(definition) {
     }
   };
 
-  this.getEntity = function(name, namespace) {
-    var info = self.getClassInfo(name, namespace);
+   getEntity (name?: string, namespace?:string) {
+    const info = this.getClassInfo(name, namespace);
 
-    checkLoaded(info.namespace);
+    this.checkLoaded(info.namespace);
 
-    if (!model.schemas[info.namespace].entitySets
-        || !model.schemas[info.namespace].entitySets[info.name]) {
+    if (!this.model.schemas[info.namespace].entitySets
+        || !this.model.schemas[info.namespace].entitySets[info.name]) {
       throw new Error('Entity not found in model definition: '
-          + self.getFullName(info.name, info.namespace));
+          + this.getFullName(info.name, info.namespace));
     }
 
-    return model.schemas[info.namespace].entitySets[info.name];
+    return this.model.schemas[info.namespace].entitySets[info.name];
 
   };
 
-  this.getType = function(name, namespace) {
+   getType (name: string, namespace: string) {
 
-    var info = self.getClassInfo(name, namespace);
+    const info = this.getClassInfo(name, namespace);
 
-    checkLoaded(info.namespace);
+    this.checkLoaded(info.namespace);
 
-    if (!model.schemas[info.namespace].entityTypes
-        || !model.schemas[info.namespace].entityTypes[info.name]) {
+    if (!this.model.schemas[info.namespace].entityTypes
+        || !this.model.schemas[info.namespace].entityTypes[info.name]) {
       throw new Error('Type not found in model definition: '
-          + self.getFullName(info.name, info.namespace));
+          + this.getFullName(info.name, info.namespace));
     }
 
-    return model.schemas[info.namespace].entityTypes[info.name];
+    return this.model.schemas[info.namespace].entityTypes[info.name];
   };
 
-  this.getEntityType = function(name, namespace) {
-    var info = self.getClassInfo(name, namespace);
+   getEntityType = function(name:string, namespace?:string) {
+    const info = this.getClassInfo(name, namespace);
 
-    checkLoaded(info.namespace);
+    this.checkLoaded(info.namespace);
 
-    var type = self
+    const type = this
         .getClassInfo(this.getEntity(info.name, info.namespace).entityType);
 
     return this.getType(type.name, type.namespace);
   };
 
-  this.getEntitySet = function(name, namespace) {
+  getEntitySet (name: string, namespace?: string) {
 
-    var info = self.getClassInfo(name, namespace);
+    const info = this.getClassInfo(name, namespace);
 
-    checkLoaded(info.namespace);
+    this.checkLoaded(info.namespace);
 
-    name = self.getFullName(info.name, info.namespace);
+    name = this.getFullName(info.name, info.namespace);
 
-    if (model.schemas[info.namespace].entitySets) {
-      for ( var eSet in model.schemas[info.namespace].entitySets) {
-        if (model.schemas[info.namespace].entitySets[eSet].entityType === name)
+    if (this.model.schemas[info.namespace].entitySets) {
+      for ( const eSet in this.model.schemas[info.namespace].entitySets) {
+        if (this.model.schemas[info.namespace].entitySets[eSet].entityType === name)
           return eSet;
       }
     }
@@ -254,8 +254,8 @@ function ODataModel(definition) {
     throw new Error('No set defined for type in model definition: ' + name);
   };
 
-  this.getPrimaryKey = function(name, namespace) {
-    var keys = this.getEntityType(name, namespace).key;
+   getPrimaryKey(name: string, namespace: string) {
+    const keys = this.getEntityType(name, namespace).key;
 
     switch (keys.length) {
     case 0:
@@ -267,7 +267,5 @@ function ODataModel(definition) {
     }
   };
 
-  // load the model definition if passed on constructor
-  if (definition)
-    this.load(definition);
+ 
 }

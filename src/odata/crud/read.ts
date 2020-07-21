@@ -1,15 +1,15 @@
-var url = require('url');
-var querystring = require('querystring');
-var parser = require('odata-parser');
-var util = require('../util.js');
+import * as url from 'url';
+import * as querystring from 'querystring';
+import * as parser from 'odata-parser';
 
-module.exports = {
-  getQuery : function(req) {
-    var queryOptions = {};
+
+
+export let getQuery = function(req:Request) {
+    var queryOptions: { $inlinecount: boolean; collection: any; $count: boolean; $filter: { _id: any; }; } ;
     var _url = url.parse(req.url, true);
     if (_url.search) {
-      var query = _url.query;
-      var fixedQS = {};
+      const query = _url.query;
+      let fixedQS: querystring.ParsedUrlQueryInput;
       if (query.$)
         fixedQS.$ = query.$;
       if (query.$expand)
@@ -38,7 +38,7 @@ module.exports = {
       }
     }
 
-    queryOptions.collection = req.params.collection;
+     queryOptions.collection = req.params.collection;
 
     if (req.params.$count) {
       queryOptions.$count = true;
@@ -53,7 +53,7 @@ module.exports = {
    
     return queryOptions;
   }
-};
+
 
 function queryTransform(query) {
   if (query.$filter) {
