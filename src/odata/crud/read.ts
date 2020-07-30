@@ -1,65 +1,74 @@
 import * as url from 'url';
 import * as querystring from 'querystring';
 import * as parser from 'odata-parser';
+import {Request} from "express";
+import {ODataQuery} from "odata-v4-server";
 
+// /Users/valentin/Workspace/acorn/akeraio/akera-rest-api/node_modules/@types/qs/index
 
+export interface IQueryOptions extends ODataQuery {
+  $inlinecount: boolean;
+  collection: any;
+  $count: boolean;
+  $filter: { _id: any; };
+}
 
-export let getQuery = function(req:Request) {
-    var queryOptions: { $inlinecount: boolean; collection: any; $count: boolean; $filter: { _id: any; }; } ;
-    var _url = url.parse(req.url, true);
-    if (_url.search) {
-      const query = _url.query;
-      let fixedQS: querystring.ParsedUrlQueryInput;
-      if (query.$)
-        fixedQS.$ = query.$;
-      if (query.$expand)
-        fixedQS.$expand = query.$expand;
-      if (query.$filter)
-        fixedQS.$filter = query.$filter;
-      if (query.$format)
-        fixedQS.$format = query.$format;
-      if (query.$inlinecount)
-        fixedQS.$inlinecount = query.$inlinecount;
-      if (query.$select)
-        fixedQS.$select = query.$select;
-      if (query.$skip)
-        fixedQS.$skip = query.$skip;
-      if (query.$top)
-        fixedQS.$top = query.$top;
-      if (query.$orderby)
-        fixedQS.$orderby = query.$orderby;
+export let getQuery = function (req: Request): IQueryOptions {
+  let queryOptions: IQueryOptions;
+  let _url: url.UrlWithParsedQuery = url.parse(req.url, true);
+  if (_url.search) {
+    const query = _url.query;
+    let fixedQS: querystring.ParsedUrlQueryInput = {};
+    if (query.$)
+      fixedQS.$ = query.$;
+    if (query.$expand)
+      fixedQS.$expand = query.$expand;
+    if (query.$filter)
+      fixedQS.$filter = query.$filter;
+    if (query.$format)
+      fixedQS.$format = query.$format;
+    if (query.$inlinecount)
+      fixedQS.$inlinecount = query.$inlinecount;
+    if (query.$select)
+      fixedQS.$select = query.$select;
+    if (query.$skip)
+      fixedQS.$skip = query.$skip;
+    if (query.$top)
+      fixedQS.$top = query.$top;
+    if (query.$orderby)
+      fixedQS.$orderby = query.$orderby;
 
-      var encodedQS = decodeURIComponent(querystring.stringify(fixedQS));
-      if (encodedQS) {
-        queryOptions = queryTransform(parser.parse(encodedQS));
-      }
-      if (query.$count) {
-        queryOptions.$inlinecount = true;
-      }
+    var encodedQS = decodeURIComponent(querystring.stringify(fixedQS));
+    if (encodedQS) {
+      queryOptions = queryTransform(parser.parse(encodedQS));
     }
-
-     queryOptions.collection = req.params.collection;
-
-    if (req.params.$count) {
-      queryOptions.$count = true;
+    if (query.$count) {
+      queryOptions.$inlinecount = true;
     }
-
-    if (req.params.id) {
-      req.params.id = req.params.id.replace(/\"/g, "").replace(/'/g, "");
-      queryOptions.$filter = {
-        _id : req.params.id
-      };
-    }
-   
-    return queryOptions;
   }
 
+  queryOptions.collection = req.params.collection;
 
-function queryTransform(query) {
+  if (req.params.$count) {
+    queryOptions.$count = true;
+  }
+
+  if (req.params.id) {
+    req.params.id = req.params.id.replace(/\"/g, "").replace(/'/g, "");
+    queryOptions.$filter = {
+      _id: req.params.id
+    };
+  }
+
+  return queryOptions;
+}
+
+
+function queryTransform(query): IQueryOptions {
   if (query.$filter) {
     query.$filter = new Node(query.$filter.type, query.$filter.left,
-        query.$filter.right, query.$filter.func, query.$filter.args)
-        .transform();
+      query.$filter.right, query.$filter.func, query.$filter.args)
+      .transform();
   } else {
     query.$filter = {};
   }
@@ -70,7 +79,7 @@ function queryTransform(query) {
 
   if (query.$orderby) {
     query.$sort = {};
-    query.$orderby.forEach(function(prop) {
+    query.$orderby.forEach(function (prop) {
       var propName = Object.keys(prop)[0];
       query.$sort[propName] = prop[propName] === "desc" ? -1 : 1;
     });
@@ -81,7 +90,7 @@ function queryTransform(query) {
   }
 
   var select = {};
-  for ( var key in query.$select || []) {
+  for (var key in query.$select || []) {
     select[query.$select[key]] = 1;
   }
   query.$select = select;
@@ -97,7 +106,7 @@ function Node(type, left, right, func, args) {
   this.args = args;
 }
 
-Node.prototype.transform = function() {
+Node.prototype.transform = function () {
   var result = {};
 
   if (this.type === "eq" && this.right.type === 'literal') {
@@ -106,36 +115,36 @@ Node.prototype.transform = function() {
 
   if (this.type === "lt" && this.right.type === 'literal') {
     result[this.left.name] = {
-      "$lt" : this.right.value
+      "$lt": this.right.value
     };
   }
 
   if (this.type === "gt" && this.right.type === 'literal') {
     result[this.left.name] = {
-      "$gt" : this.right.value
+      "$gt": this.right.value
     };
   }
 
   if (this.type === "and") {
     result["$and"] = result["$and"] || [];
     result["$and"].push(new Node(this.left.type, this.left.left,
-        this.left.right, this.func, this.args).transform());
+      this.left.right, this.func, this.args).transform());
     result["$and"].push(new Node(this.right.type, this.right.left,
-        this.right.right, this.func, this.args).transform());
+      this.right.right, this.func, this.args).transform());
   }
 
   if (this.type === "or") {
     result["$or"] = result["$or"] || [];
     result["$or"].push(new Node(this.left.type, this.left.left,
-        this.left.right, this.func, this.args).transform());
+      this.left.right, this.func, this.args).transform());
     result["$or"].push(new Node(this.right.type, this.right.left,
-        this.right.right, this.func, this.args).transform());
+      this.right.right, this.func, this.args).transform());
   }
 
   if (this.type === "functioncall") {
     switch (this.func) {
-    case "substringof":
-      substringof(this, result);
+      case "substringof":
+        substringof(this, result);
     }
   }
 
