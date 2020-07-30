@@ -99,8 +99,20 @@ export class MetadataBuilder {
   }
  
 
-  serializeCollectionFnImports(methods: any[], workspaceNode) {
+  serializeCollectionFnImports(methods: any[], workspaceNode: builder.XMLElement) {
     methods.forEach(function (method:methodConfig) {
+      const xml = builder.create({
+        service: {
+          "@xmlns": "http://www.w3.org/2007/app",
+          "@xmlns:atom": "http://www.w3.org/2005/Atom",
+          "@xmlns:m": "http://docs.oasis-open.org/odata/ns/metadata",
+          "@xml:base": this.serviceUrl,
+          "@m:context": this.serviceUrl + "$metadata",
+        },
+      });
+  
+      workspaceNode = xml.ele("workspace");
+  
       workspaceNode
         .ele({
           "m:function-import": {
@@ -111,7 +123,7 @@ export class MetadataBuilder {
     });
   }
 
-  serializeProperty(name:string, property:property, entityNode) {
+  serializeProperty(name:string, property:property, entityNode: builder.XMLElement) {
     if (property.navigation === true) {
       const navNode = entityNode.ele({
         NavigationProperty: {
@@ -160,7 +172,7 @@ export class MetadataBuilder {
     }
   }
 
-  serializeEntityNavigations(model: ODataModel, entityType, set:string) {
+  serializeEntityNavigations(model: ODataModel, entityType: { properties: { [x: string]: any; }; }, set:string) {
    
     const xml = builder.create({
       service: {
@@ -297,7 +309,7 @@ export class MetadataBuilder {
     return functionNode;
   }
 
-  serializeEntityContainerActions(entityTypes,container:string, namespace) {
+  serializeEntityContainerActions(entityTypes,container:string, namespace:string) {
     const xml = builder.create({
       service: {
         "@xmlns": "http://www.w3.org/2007/app",

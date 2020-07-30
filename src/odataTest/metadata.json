@@ -1,0 +1,35 @@
+{
+  "version": "4.0",
+  "dataServices": {
+    "schema": [
+      {
+        "namespace": "Default",
+
+        "function": [
+          {
+            "name": "findProduct",
+            "parameter": [
+              {
+                "mode": "IN",
+                "type": "Edm.Int64"
+                
+              }
+            ],
+            "returnType": {
+              "type": "Edm.Int64"
+            }
+          }
+        ],
+        "entityContainer": {
+          "name": "Container",
+          "functionImport": [
+            {
+              "name": "findProduct",
+              "function": "Default.findProduct"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

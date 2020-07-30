@@ -2,9 +2,10 @@ import { MetadataBuilder } from "./metadata.js";
 import { Util } from "./util.js";
 import * as odataHandler from "./odata-handler.js";
 import * as xmlbuilder from "xmlbuilder";
-import { Response, Request, response } from "express";
+import { Response, Request } from "express";
 import { config } from "process";
 import { Url } from "url";
+import { request } from "http";
 export interface Config {
   route: "/rest-api/";
   modelPath: "WEBPATH";
@@ -42,6 +43,7 @@ export class ODataRouter {
     this.broker = router.__broker;
     res.odataError = _odataErr;
     next();
+
   }
 
   getResult( res: Response) {
