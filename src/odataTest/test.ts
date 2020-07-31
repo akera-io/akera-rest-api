@@ -1,4 +1,4 @@
-import { ODataServer, odata, Edm, ODataController } from "odata-v4-server";
+import {ODataServer, odata, Edm, ODataController} from "odata-v4-server";
 import * as express from "express";
 
 
@@ -21,23 +21,20 @@ class findProduct_Product {
 @odata.namespace("Akera")
 //@odata.controller(ProductCtrl, true)
 export class AkeraApiServer extends ODataServer {
-  
+
   @Edm.FunctionImport
   @Edm.Int64
-  findProduct(@Edm.Int64 num:number) {
+  findProduct(@Edm.Int64 num: number) {
     return num;
-    
+
   }
 
 
-
- 
- 
-  
   //static $metadata (): ServiceMetadata {
   // return ServiceMetadata.processMetadataJson(schema);
   //}
 }
+
 //let servMetadata=ServiceMetadata.processEdmx(schema)
 AkeraApiServer.$metadata(schema);
 

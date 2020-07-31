@@ -10,9 +10,10 @@
             "name": "findProduct",
             "parameter": [
               {
+                "name": "num",
                 "mode": "IN",
                 "type": "Edm.Int64"
-                
+
               }
             ],
             "returnType": {
