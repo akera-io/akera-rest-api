@@ -1,16 +1,30 @@
-import { Direction, DataType, IABLCall , IDatasetSchema, ITableSchema} from "@akeraio/api";
+import {
+  IABLCall,
+  IDatasetSchema,
+  ITableSchema,
+} from "@akeraio/api";
+import {Edm} from "odata-v4-metadata";
 
-import { Edm } from "odata-v4-metadata";
 
-
+// let catalog:AkeraRestCatalog[];
+// let schema:Edm.Schema;
 interface AkeraRestCatalog {
   namespace?: string;
-  functions?: API[];
- 
+  functions?:Array<API>;
+}
+interface API extends IABLCall {
+
+  schema: [ITableSchema | IDatasetSchema];
 }
 
-interface API extends IABLCall {
-  schema:ITableSchema| IDatasetSchema;
+let convert=function(catalog:AkeraRestCatalog){
+  let schema:Edm.Schema;
+  let funcSchema:Edm.Function;
+  schema.namespace=catalog.namespace;
+   function function1() {
+    
+  }
+  
 }
 
 

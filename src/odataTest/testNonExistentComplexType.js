@@ -36,6 +36,20 @@ var AkeraApiServer = /** @class */ (function (_super) {
     return AkeraApiServer;
 }(odata_v4_server_1.ODataServer));
 exports.AkeraApiServer = AkeraApiServer;
+var complexTypes = schema.dataServices.schema[0].complexType;
+complexTypes.forEach(function (complexT) {
+    var complexTDecorators = [];
+    complexTDecorators.push(odata_v4_server_1.Edm.ComplexType);
+    var properties = complexT.property;
+    var propNames = [];
+    properties.forEach(function (property, index) {
+        propNames.push(property.name);
+        complexTDecorators.push(decorators.decorateProperty(index, decorators.getType(property.type)));
+    });
+    AkeraApiServer.prototype[complexT.name] = new Function("return function(" + propNames.join(",") + "){\n        return " + propNames.join(",") + ";\n    }")();
+    console.log("object(" + complexT.name + ") {\n        \n        propertiesName " + propNames.join(",") + ";\n      }");
+    decorators.decorate(complexTDecorators, AkeraApiServer.prototype, complexT.name, null);
+});
 var functions = schema.dataServices.schema[0]["function"];
 functions.forEach(function (func) {
     var funcDecorators = [];
@@ -46,13 +60,13 @@ functions.forEach(function (func) {
         paramNames.push(parameter.name);
         funcDecorators.push(decorators.decorateParameter(index, decorators.getType(parameter.type)));
     });
-    AkeraApiServer.prototype[func.name] = new Function("return function(" + paramNames.join(", ") + ") { \n    console.log(\"" + func.name + "\", " + paramNames.join(",") + ");\n    return " + paramNames.join(",") + ";\n  }")();
-    console.log("function(" + paramNames.join(", ") + ") {\n    console.log(\"" + func.name + "\", " + paramNames.join(",") + ");\n    return " + paramNames.join(",") + ";\n  }");
+    AkeraApiServer.prototype[func.name] = new Function("return function(" + paramNames.join(", ") + ") { \n        console.log(\"" + func.name + "\", " + paramNames.join(",") + ");\n        return " + paramNames.join(",") + ";\n      }")();
+    console.log("function(" + paramNames.join(", ") + ") {\n        \n        return " + paramNames.join(",") + "\n      }");
     decorators.decorate(funcDecorators, AkeraApiServer.prototype, func.name, null);
 });
-//AkeraApiServer.$metadata(schema);
+AkeraApiServer.$metadata(schema);
 var app = express();
 app.use("/odata", AkeraApiServer.create());
-app.listen(3000, function () {
+app.listen(2000, function () {
     console.log("Listening");
 });

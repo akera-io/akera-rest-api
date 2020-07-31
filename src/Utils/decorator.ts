@@ -1,18 +1,30 @@
 import * as odataServer from "odata-v4-server";
 
 export function decorateMetadata(key, value) {
-  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(key, value);
+  if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+    return Reflect.metadata(key, value);
 }
 
 export function decorateParameter(parameterIndex, decorator) {
   return function (target, key) {
     decorator(target, key, parameterIndex);
-  }
+  };
+}
+
+export function decorateProperty(propertyIndex, decorator) {
+  return function (target, key) {
+    decorator(target, key, propertyIndex);
+  };
 }
 
 export function decorate(decorators, target, key, desc) {
   const c = arguments.length;
-  let r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc;
+  let r =
+    c < 3
+      ? target
+      : desc === null
+      ? (desc = Object.getOwnPropertyDescriptor(target, key))
+      : desc;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") {
     r = Reflect.decorate(decorators, target, key, desc);
   } else {
@@ -36,3 +48,6 @@ export function getType(typeName) {
 
   return type;
 }
+
+
+

@@ -4,6 +4,21 @@
     "schema": [
       {
         "namespace": "Default",
+        "complexType": [
+          {
+            "name": " findProduct_Product",
+            "property": [
+              {
+                "name": "Name",
+                "type": "Edm.String"
+              },
+              {
+                "name": "age",
+                "type": "Edm.Int32"
+              }
+            ]
+          }
+        ],
 
         "function": [
           {
@@ -11,13 +26,12 @@
             "parameter": [
               {
                 "name": "num",
-                "mode": "IN",
-                "type": "Edm.Int64"
 
+                "type": "Edm.Int64"
               }
             ],
             "returnType": {
-              "type": "Edm.Int64"
+              "type": "Edm.complexType( findProduct_Product)"
             }
           }
         ],
