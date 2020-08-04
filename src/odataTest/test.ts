@@ -1,16 +1,26 @@
-import {ODataServer, odata, Edm, ODataController} from "odata-v4-server";
+import {
+  ODataServer,
+  odata,
+  Edm,
+  ODataController,
+  ODataBase,
+} from "odata-v4-server";
 import * as express from "express";
 import { stringWriter } from "xmlbuilder";
-
 
 let schema = require("./metadata.json");
 
 class findProduct_Product {
   @Edm.String
-  Name?: string;
+  public name: string;
 
   @Edm.Int32
-  age?: number;
+  public age: number;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
 }
 
 // @odata.type(Product)
@@ -22,25 +32,23 @@ class findProduct_Product {
 @odata.namespace("Akera")
 //@odata.controller(ProductCtrl, true)
 export class AkeraApiServer extends ODataServer {
-
-  @Edm.FunctionImport
+  @odata.POST
+  @Edm.Action
   @Edm.ComplexType(findProduct_Product)
-  findProduct(@Edm.Int64 num: number) {
-   let ctype: findProduct_Product;
-   ctype.Name="Andrei";
-   ctype.age=23;
-    return ctype
-
+  findProduct(
+    @odata.body x:findProduct_Product
+  ) {
+    let num = x.name;
+    console.log(num, x.age);
+    return x;
   }
-
 
   //static $metadata (): ServiceMetadata {
   // return ServiceMetadata.processMetadataJson(schema);
   //}
 }
-
 //let servMetadata=ServiceMetadata.processEdmx(schema)
-// AkeraApiServer.$metadata(schema);
+//AkeraApiServer.$metadata(schema);
 
 const app = express();
 app.use("/odata", AkeraApiServer.create());
