@@ -156,6 +156,10 @@ export function decorateClassFunctions(classDefinition, ComplexObjects, function
       paramNames.push(parameter.name);
       funcDecorators.push(decorateParameter(index, getType(parameter.type, ComplexObjects)));
     });
+
+    // As the application expects that the arguments passed in the request to
+    // be defined as parameters in the function/method definition,
+    // we need to define the function like this.
     classDefinition.prototype[func.name] = new Function(`return function(${paramNames.join(", ")}) {
         console.log("${func.name}", ${paramNames.length ? paramNames.join(",") : "''"});
         return ${paramNames.length ? paramNames.join(",") : "''"};
@@ -181,6 +185,10 @@ export function decorateClassActions(classDefinition, ComplexObjects, actionDefi
       paramNames.push(parameter.name);
       funcDecorators.push(decorateParameter(index, odata.body));
     });
+
+    // As the application expects that the arguments passed in the request to
+    // be defined as parameters in the function/method definition,
+    // we need to define the function like this.
     classDefinition.prototype[func.name] = new Function(`return function(${paramNames.join(", ")}) {
         console.log("${func.name}", ${paramNames.length ? paramNames.join(",") : "''"});
         return ${paramNames.length ? paramNames.join(",") : "''"};
