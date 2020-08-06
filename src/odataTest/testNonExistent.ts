@@ -15,9 +15,8 @@ const functions = schema.dataServices.schema[0].function;
 functions.forEach((func) => {
   const funcDecorators = [];
   funcDecorators.push(Edm.FunctionImport, decorators.getType(func.returnType.type));
-  const parameters = func.parameter;
   let paramNames = [];
-  parameters.forEach((parameter, index) => {
+  func.parameter.forEach((parameter, index) => {
     paramNames.push(parameter.name);
     funcDecorators.push(decorators.decorateParameter(index, decorators.getType(parameter.type)));
   });
