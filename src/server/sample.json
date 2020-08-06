@@ -1,0 +1,12 @@
+{
+  "name": "sample",
+  "type": "procedure",
+  "call": "a.p",
+  "parameters": [
+    {
+      "direction": "io",
+      "name": "char1",
+      "type": "character"
+    }
+  ]
+}

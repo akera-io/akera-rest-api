@@ -6,25 +6,27 @@ import {
 import {Edm} from "odata-v4-metadata";
 
 
-// let catalog:AkeraRestCatalog[];
+// let server:AkeraRestCatalog[];
 // let schema:Edm.Schema;
 interface AkeraRestCatalog {
   namespace?: string;
-  functions?:Array<API>;
+  functions?: Array<API>;
 }
+
 interface API extends IABLCall {
 
   schema: [ITableSchema | IDatasetSchema];
 }
 
-let convert=function(catalog:AkeraRestCatalog){
-  let schema:Edm.Schema;
-  let funcSchema:Edm.Function;
-  schema.namespace=catalog.namespace;
-   function function1() {
-    
+let convert = function (catalog: AkeraRestCatalog) {
+  let schema: Edm.Schema;
+  let funcSchema: Edm.Function;
+  schema.namespace = catalog.namespace;
+
+  function function1() {
+
   }
-  
+
 }
 
 
