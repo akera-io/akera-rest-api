@@ -1,7 +1,7 @@
 import {Edm, odata, ODataServer, ComplexType} from "odata-v4-server";
 import * as express from "express";
 
-import * as decorators from "../Utils/decorator";
+import * as decorators from "./decorator";
 
 const schema = require("./metadata.json");
 
