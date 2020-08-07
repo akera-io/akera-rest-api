@@ -70,7 +70,7 @@ export class Catalog {
       this.parseParameters();
     }
 
-    oDataServer.prototype[this.definition.name] = this.execute;
+    oDataServer.prototype[this.definition.name] = (req) => this.execute(req);
 
     this.decorate(
       [
@@ -93,6 +93,7 @@ export class Catalog {
    * @param req The request object.
    */
   public execute(req) {
+    console.log(req, this.definition);
     return {
       ...req,
       ds1: {
@@ -292,14 +293,14 @@ export class Catalog {
         const tableName = this.getName(table.name, dsSchema.name);
         const tableDefinition = this.complexObjects[tableName] || this.defineTableRow(table, dsSchema.name);
 
-        Object.defineProperty(dataset.prototype, tableName, {
+        Object.defineProperty(dataset.prototype, table.name, {
           configurable: true,
           writable: true
         });
         this.decorate(
           [Edm.Collection(Edm.ComplexType(tableDefinition))],
           dataset.prototype,
-          tableName,
+          table.name,
           void 0);
       });
     }
