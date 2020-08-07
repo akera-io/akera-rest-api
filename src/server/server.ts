@@ -10,9 +10,12 @@ import {Catalog} from "./Catalog";
 export class AkeraApiServer extends ODataServer {
 }
 
-const fileContent = fs.readFileSync(path.join(__dirname, "./sample2.json"), "utf-8");
-const definition: IABLNameCall = JSON.parse(fileContent);
-Catalog.parse(AkeraApiServer, definition);
+// const fileContent = fs.readFileSync(path.join(__dirname, "./sample2.json"), "utf-8");
+const fileContent = fs.readFileSync(path.join(__dirname, "./sample3.json"), "utf-8");
+// const definition: IABLNameCall = JSON.parse(fileContent);
+const definitions: IABLNameCall[] = JSON.parse(fileContent);
+// Catalog.parse(AkeraApiServer, definition);
+Catalog.parseArray(AkeraApiServer, definitions);
 
 const app = express();
 app.use("/odata", AkeraApiServer.create());

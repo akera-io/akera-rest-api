@@ -10,14 +10,12 @@ export class Catalog {
   /**
    * The object sent by the user to the application.
    */
-  private requestObject = function Request() {
-  };
+  private requestObject: Function;
 
   /**
    * The object sent by the application to the user.
    */
-  private responseObject = function Response() {
-  };
+  private responseObject: Function;
 
   /**
    * A list with defined ComplexType objects.
@@ -36,6 +34,8 @@ export class Catalog {
    */
   protected constructor(catalogDefinition: IABLNameCall) {
     this.definition = catalogDefinition;
+    this.requestObject = new Function(`return function ${catalogDefinition.name}_Request(){}`)();
+    this.responseObject = new Function(`return function ${catalogDefinition.name}_Response(){}`)();
   }
 
   /**
@@ -48,6 +48,17 @@ export class Catalog {
   public static parse(oDataServer, catalogDefinition: IABLNameCall): Catalog {
     const instance = new Catalog(catalogDefinition);
     return instance.init(oDataServer);
+  }
+
+  /**
+   * Parses the given catalog definitions and attaches the metadata to the
+   * given ODataServer class.
+   *
+   * @param oDataServer The class used to serve OData requests.
+   * @param catalogDefinitions The catalog definitions.
+   */
+  public static parseArray(oDataServer, catalogDefinitions: IABLNameCall[]): Catalog[] {
+    return catalogDefinitions.map((catalogDefinition) => Catalog.parse(oDataServer, catalogDefinition));
   }
 
   /**
@@ -201,20 +212,29 @@ export class Catalog {
     this.decorate(decorators, this.responseObject.prototype, name, void 0);
   }
 
+  protected getName(element, prefix = "") {
+    if (prefix) {
+      prefix = `${prefix}_`;
+    }
+    return `${this.definition.name}_${prefix}${element}`;
+  }
+
   /**
    * Defines a Table ComplexType that will be used in the request/response object.
    *
    * @param parameter The parameter that will be added.
+   * @param prefix The prefix of the parameter.
    */
-  protected defineTable(parameter: INameParameter) {
-    if (!this.complexObjects[parameter.schema.name]) {
-      this.complexObjects[parameter.schema.name] = this.defineTableRow(<ITableSchema>parameter.schema);
+  protected defineTable(parameter: INameParameter, prefix = "") {
+    const tableName = this.getName(parameter.schema.name, prefix);
+    if (!this.complexObjects[tableName]) {
+      this.complexObjects[tableName] = this.defineTableRow(<ITableSchema>parameter.schema, prefix);
     }
 
     this.addParameter(
       parameter.name,
       parameter.direction,
-      [Edm.Collection(Edm.ComplexType(this.complexObjects[parameter.schema.name]))]
+      [Edm.Collection(Edm.ComplexType(this.complexObjects[tableName]))]
     )
   }
 
@@ -222,15 +242,17 @@ export class Catalog {
    * Defines the row of a Table ComplexType.
    *
    * @param tableSchema The table row schema.
+   * @param prefix The prefix of the table.
    */
-  protected defineTableRow(tableSchema: ITableSchema): Function {
+  protected defineTableRow(tableSchema: ITableSchema, prefix = ""): Function {
+    const tableName = this.getName(tableSchema.name, prefix);
     /**
      * In order to have the Correct Complex Type name defined in metadata we need to define
      * the function like this.
      *
      * You can test to see what happens by swapping the comments for the next 2 lines.
      */
-    const row = new Function(`return function ${tableSchema.name}() {}`)();
+    const row = new Function(`return function ${tableName}() {}`)();
     // const row = function() {};
 
     tableSchema.fields.forEach((field) => {
@@ -251,8 +273,9 @@ export class Catalog {
    */
   protected defineDataset(parameter: INameParameter) {
     const dsSchema: IDatasetSchema = <IDatasetSchema>parameter.schema;
+    const dsName = this.getName(dsSchema.name);
 
-    let dataset = this.complexObjects[dsSchema.name];
+    let dataset = this.complexObjects[dsName];
     if (!dataset) {
       /**
        * In order to have the Correct Complex Type name defined in metadata we need to define
@@ -260,22 +283,23 @@ export class Catalog {
        *
        * You can test to see what happens by swapping the comments for the next 2 lines.
        */
-      dataset = new Function(`return function ${dsSchema.name}() {}`)();
+      dataset = new Function(`return function ${dsName}() {}`)();
       // dataset = function () {};
 
-      this.complexObjects[dsSchema.name] = dataset;
+      this.complexObjects[dsName] = dataset;
 
       dsSchema.tables.forEach((table) => {
-        const tableDefinition = this.complexObjects[table.name] || this.defineTableRow(table);
+        const tableName = this.getName(table.name, dsSchema.name);
+        const tableDefinition = this.complexObjects[tableName] || this.defineTableRow(table, dsSchema.name);
 
-        Object.defineProperty(dataset.prototype, table.name, {
+        Object.defineProperty(dataset.prototype, tableName, {
           configurable: true,
           writable: true
         });
         this.decorate(
           [Edm.Collection(Edm.ComplexType(tableDefinition))],
           dataset.prototype,
-          table.name,
+          tableName,
           void 0);
       });
     }
@@ -283,7 +307,7 @@ export class Catalog {
     this.addParameter(
       parameter.name,
       parameter.direction,
-      [Edm.ComplexType(this.complexObjects[parameter.schema.name])]
+      [Edm.ComplexType(this.complexObjects[dsName])]
     )
   }
 }
