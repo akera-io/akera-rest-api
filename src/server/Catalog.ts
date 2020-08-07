@@ -2,6 +2,14 @@ import {DataType, Direction, IDatasetSchema, ITableSchema} from "@akeraio/api";
 import {Edm, odata} from "odata-v4-server";
 
 import {ABL2ODataMapping, IABLNameCall, INameParameter} from "./Interfaces";
+import {Connection} from "@akeraio/api/dist/lib/Connection";
+
+const connection = new Connection({
+  server: {
+    host: "192.168.10.18",
+    port: 8900
+  }
+});
 
 /**
  * An Akera OData Catalog definition parser.
@@ -92,15 +100,23 @@ export class Catalog {
    *
    * @param req The request object.
    */
-  public execute(req) {
-    console.log(req, this.definition);
-    return {
-      ...req,
-      ds1: {
-        leTT2: [...req.tt1],
-        leTT3: [...req.tt1],
+  public async execute(req) {
+    const obj = {...this.definition};
+    await connection.connect();
+
+    obj.parameters.forEach((parameter) => {
+      if (req[parameter.name]) {
+        parameter.value = req[parameter.name];
       }
-    };
+    });
+
+    const res = await connection.call(obj);
+    return obj.parameters
+      .filter((parameter) => parameter.direction !== Direction.INPUT)
+      .reduce((accum, value, index) => ({
+        ...accum,
+        [value.name]: res.parameters[index]
+      }), {});
   }
 
   /**

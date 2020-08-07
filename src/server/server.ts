@@ -1,8 +1,10 @@
 import {odata, ODataServer} from "odata-v4-server";
 import * as express from "express";
-import {IABLNameCall} from "./Interfaces";
 import * as fs from "fs";
 import * as path from "path";
+
+//http://192.168.10.18:8900/
+import {IABLNameCall} from "./Interfaces";
 import {Catalog} from "./Catalog";
 
 @odata.cors
@@ -10,12 +12,12 @@ import {Catalog} from "./Catalog";
 export class AkeraApiServer extends ODataServer {
 }
 
-// const fileContent = fs.readFileSync(path.join(__dirname, "./sample2.json"), "utf-8");
-const fileContent = fs.readFileSync(path.join(__dirname, "./sample3.json"), "utf-8");
-// const definition: IABLNameCall = JSON.parse(fileContent);
-const definitions: IABLNameCall[] = JSON.parse(fileContent);
-// Catalog.parse(AkeraApiServer, definition);
-Catalog.parseArray(AkeraApiServer, definitions);
+const fileContent = fs.readFileSync(path.join(__dirname, "./sample_akeraCall.json"), "utf-8");
+// const fileContent = fs.readFileSync(path.join(__dirname, "./sample3.json"), "utf-8");
+const definition: IABLNameCall = JSON.parse(fileContent);
+// const definitions: IABLNameCall[] = JSON.parse(fileContent);
+Catalog.parse(AkeraApiServer, definition);
+// Catalog.parseArray(AkeraApiServer, definitions);
 
 const app = express();
 app.use("/odata", AkeraApiServer.create());

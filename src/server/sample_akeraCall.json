@@ -1,0 +1,36 @@
+{
+  "name": "akeraCall",
+  "type": "procedure",
+  "call": "demo/sports2000/dynProcTT.p",
+  "method": "",
+  "parameters": [
+    {
+      "direction": "i",
+      "name": "a",
+      "type": "character"
+    },
+    {
+      "direction": "i",
+      "name": "b",
+      "type": "integer"
+    },
+    {
+      "direction": "o",
+      "name": "ttResult",
+      "type": "table",
+      "schema": {
+        "name": "ttResult",
+        "fields": [
+          {
+            "name": "fldStr",
+            "type": "character"
+          },
+          {
+            "name": "fldInt",
+            "type": "integer"
+          }
+        ]
+      }
+    }
+  ]
+}
