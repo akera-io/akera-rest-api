@@ -20,7 +20,7 @@ Catalog.parseArray(AkeraApiServer, definitions);
 
 const app = express();
 app.use("/odata", AkeraApiServer.create());
-
+// TODO: Disable stacktrace process.env.ODATA_V4_DISABLE_STACKTRACE
 app.listen(2000, () => {
   console.log("Listening");
 });
