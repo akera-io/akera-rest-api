@@ -3,7 +3,6 @@ import * as express from "express";
 import * as fs from "fs";
 import * as path from "path";
 
-//http://192.168.10.18:8900/
 import {IABLNameCall} from "./Interfaces";
 import {Catalog} from "./Catalog";
 
