@@ -283,7 +283,7 @@ export class Catalog {
     this.addParameter(
       parameter.name,
       parameter.direction,
-      [Edm.ComplexType(this.complexObjects[parameter.name])]
+      [Edm.ComplexType(this.complexObjects[parameter.schema.name])]
     )
   }
 }
