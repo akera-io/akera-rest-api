@@ -207,14 +207,14 @@ export class Catalog {
    * @param parameter The parameter that will be added.
    */
   protected defineTable(parameter: INameParameter) {
-    if (!this.complexObjects[parameter.name]) {
-      this.complexObjects[parameter.name] = this.defineTableRow(<ITableSchema>parameter.schema);
+    if (!this.complexObjects[parameter.schema.name]) {
+      this.complexObjects[parameter.schema.name] = this.defineTableRow(<ITableSchema>parameter.schema);
     }
 
     this.addParameter(
       parameter.name,
       parameter.direction,
-      [Edm.Collection(Edm.ComplexType(this.complexObjects[parameter.name]))]
+      [Edm.Collection(Edm.ComplexType(this.complexObjects[parameter.schema.name]))]
     )
   }
 
@@ -252,7 +252,7 @@ export class Catalog {
   protected defineDataset(parameter: INameParameter) {
     const dsSchema: IDatasetSchema = <IDatasetSchema>parameter.schema;
 
-    let dataset = this.complexObjects[parameter.name];
+    let dataset = this.complexObjects[dsSchema.name];
     if (!dataset) {
       /**
        * In order to have the Correct Complex Type name defined in metadata we need to define
@@ -260,10 +260,10 @@ export class Catalog {
        *
        * You can test to see what happens by swapping the comments for the next 2 lines.
        */
-      dataset = new Function(`return function ${parameter.name}() {}`)();
+      dataset = new Function(`return function ${dsSchema.name}() {}`)();
       // dataset = function () {};
 
-      this.complexObjects[parameter.name] = dataset;
+      this.complexObjects[dsSchema.name] = dataset;
 
       dsSchema.tables.forEach((table) => {
         const tableDefinition = this.complexObjects[table.name] || this.defineTableRow(table);
