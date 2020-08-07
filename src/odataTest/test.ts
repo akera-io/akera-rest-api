@@ -8,7 +8,14 @@ import {
 import * as express from "express";
 import { stringWriter } from "xmlbuilder";
 
-let schema = require("./metadata.json");
+const schema = require("./metadata.json");
+
+class XY {
+  @Edm.String
+  public a: string;
+  @Edm.Int64
+  public b: number;
+}
 
 class findProduct_Product {
   @Edm.String
@@ -17,9 +24,13 @@ class findProduct_Product {
   @Edm.Int32
   public age: number;
 
-  constructor(name: string, age: number) {
+  @Edm.Collection(Edm.ComplexType(XY))
+  public text: XY[];
+
+  constructor(name: string, age: number, text: XY[]) {
     this.name = name;
     this.age = age;
+    this.text = text;
   }
 }
 
@@ -38,7 +49,7 @@ export class AkeraApiServer extends ODataServer {
   findProduct(
     @odata.body x:findProduct_Product
   ) {
-    let num = x.name;
+    const num = x.name;
     console.log(num, x.age);
     return x;
   }

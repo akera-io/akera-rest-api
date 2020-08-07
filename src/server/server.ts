@@ -10,7 +10,7 @@ import Definition from "./Definition";
 export class AkeraApiServer extends ODataServer {
 }
 
-const fileContent = fs.readFileSync(path.join(__dirname, "./sample.json"), "utf-8");
+const fileContent = fs.readFileSync(path.join(__dirname, "./sample2.json"), "utf-8");
 const definition: IABLNameCall = JSON.parse(fileContent);
 Definition(AkeraApiServer, definition);
 

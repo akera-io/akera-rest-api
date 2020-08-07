@@ -18,7 +18,7 @@ interface API extends IABLCall {
   schema: [ITableSchema | IDatasetSchema];
 }
 
-let convert = function (catalog: AkeraRestCatalog) {
+const convert = function (catalog: AkeraRestCatalog) {
   let schema: Edm.Schema;
   let funcSchema: Edm.Function;
   schema.namespace = catalog.namespace;

@@ -3,7 +3,7 @@ import * as express from "express";
 
 import * as decorators from "../Utils/decorator";
 
-let schema = require("./metadata.json");
+const schema = require("./metadata.json");
 
 @odata.cors
 @odata.namespace("Akera")

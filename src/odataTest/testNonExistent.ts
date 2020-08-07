@@ -3,7 +3,7 @@ import * as express from "express";
 
 import * as decorators from "../Utils/decorator";
 
-let schema = require("./metadata.json");
+const schema = require("./metadata.json");
 
 @odata.cors
 @odata.namespace("Akera")
@@ -15,7 +15,7 @@ const functions = schema.dataServices.schema[0].function;
 functions.forEach((func) => {
   const funcDecorators = [];
   funcDecorators.push(Edm.FunctionImport, decorators.getType(func.returnType.type));
-  let paramNames = [];
+  const paramNames = [];
   func.parameter.forEach((parameter, index) => {
     paramNames.push(parameter.name);
     funcDecorators.push(decorators.decorateParameter(index, decorators.getType(parameter.type)));
