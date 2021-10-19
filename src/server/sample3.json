@@ -1,0 +1,200 @@
+[
+  {
+    "name": "sample",
+    "type": "procedure",
+    "call": "a.p",
+    "parameters": [
+      {
+        "direction": "i",
+        "name": "tt1",
+        "type": "table",
+        "schema": {
+          "name": "leTT1",
+          "fields": [
+            {
+              "name": "a1",
+              "type": "character"
+            },
+            {
+              "name": "a2",
+              "type": "integer"
+            }
+          ]
+        }
+      },
+      {
+        "direction": "io",
+        "name": "char1",
+        "type": "character"
+      },
+      {
+        "direction": "o",
+        "name": "ds1",
+        "type": "dataset",
+        "schema": {
+          "name": "leDS",
+          "tables": [
+            {
+              "name": "leTT2",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            },
+            {
+              "name": "leTT3",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "sample2",
+    "type": "procedure",
+    "call": "a.p",
+    "parameters": [
+      {
+        "direction": "i",
+        "name": "tt1",
+        "type": "table",
+        "schema": {
+          "name": "leTT1",
+          "fields": [
+            {
+              "name": "a1",
+              "type": "character"
+            },
+            {
+              "name": "a2",
+              "type": "integer"
+            }
+          ]
+        }
+      },
+      {
+        "direction": "io",
+        "name": "char1",
+        "type": "character"
+      },
+      {
+        "direction": "o",
+        "name": "ds1",
+        "type": "dataset",
+        "schema": {
+          "name": "leDS",
+          "tables": [
+            {
+              "name": "leTT2",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            },
+            {
+              "name": "leTT3",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "sample3",
+    "type": "procedure",
+    "call": "a.p",
+    "parameters": [
+      {
+        "direction": "i",
+        "name": "tt1",
+        "type": "table",
+        "schema": {
+          "name": "leTT1",
+          "fields": [
+            {
+              "name": "a1",
+              "type": "character"
+            },
+            {
+              "name": "a2",
+              "type": "integer"
+            }
+          ]
+        }
+      },
+      {
+        "direction": "io",
+        "name": "char1",
+        "type": "character"
+      },
+      {
+        "direction": "o",
+        "name": "ds1",
+        "type": "dataset",
+        "schema": {
+          "name": "leDS",
+          "tables": [
+            {
+              "name": "leTT2",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            },
+            {
+              "name": "leTT3",
+              "fields": [
+                {
+                  "name": "a1",
+                  "type": "character"
+                },
+                {
+                  "name": "a2",
+                  "type": "integer"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

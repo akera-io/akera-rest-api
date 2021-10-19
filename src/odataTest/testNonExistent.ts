@@ -1,9 +1,9 @@
 import {Edm, odata, ODataServer} from "odata-v4-server";
 import * as express from "express";
 
-import * as decorators from "../Utils/decorator";
+import * as decorators from "./decorator";
 
-let schema = require("./metadata.json");
+const schema = require("./metadata.json");
 
 @odata.cors
 @odata.namespace("Akera")
@@ -15,9 +15,8 @@ const functions = schema.dataServices.schema[0].function;
 functions.forEach((func) => {
   const funcDecorators = [];
   funcDecorators.push(Edm.FunctionImport, decorators.getType(func.returnType.type));
-  const parameters = func.parameter;
-  let paramNames = [];
-  parameters.forEach((parameter, index) => {
+  const paramNames = [];
+  func.parameter.forEach((parameter, index) => {
     paramNames.push(parameter.name);
     funcDecorators.push(decorators.decorateParameter(index, decorators.getType(parameter.type)));
   });

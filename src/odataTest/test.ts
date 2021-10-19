@@ -1,16 +1,37 @@
-import { ODataServer, odata, Edm, ODataController } from "odata-v4-server";
+import {
+  ODataServer,
+  odata,
+  Edm,
+  ODataController,
+  ODataBase,
+} from "odata-v4-server";
 import * as express from "express";
 import { stringWriter } from "xmlbuilder";
 
+const schema = require("./metadata.json");
 
-let schema = require("./metadata.json");
+class XY {
+  @Edm.String
+  public a: string;
+  @Edm.Int64
+  public b: number;
+}
 
 class findProduct_Product {
   @Edm.String
-  Name?: string;
+  public name: string;
 
   @Edm.Int32
-  age?: number;
+  public age: number;
+
+  @Edm.Collection(Edm.ComplexType(XY))
+  public text: XY[];
+
+  constructor(name: string, age: number, text: XY[]) {
+    this.name = name;
+    this.age = age;
+    this.text = text;
+  }
 }
 
 class getProduct_Product {
@@ -30,48 +51,23 @@ class getProduct_Product {
 @odata.namespace("Akera")
 //@odata.controller(ProductCtrl, true)
 export class AkeraApiServer extends ODataServer {
-
-  @Edm.FunctionImport
+  @odata.POST
+  @Edm.Action
   @Edm.ComplexType(findProduct_Product)
-  findProduct(@Edm.Int64 num: number) {
-    let ctype: findProduct_Product;
-    ctype.Name = "Andrei";
-    ctype.age = 23;
-    return ctype
-
-  }
-
-
-  @Edm.FunctionImport
-  @Edm.ComplexType(getProduct_Product)
-  getProducts(@Edm.Int64 num: number) {
-    let ctype: getProduct_Product = {Name: "Andrei"};
-
-    ctype.products = [{ Name: "test", age: 23 },
-    { Name: "test2", age: 123 }];
-    return ctype
-
-  }
-
-  @Edm.ActionImport()
-  @Edm.ComplexType(findProduct_Product)
-  setProduct(
-    @odata.body
-    @Edm.ComplexType(findProduct_Product) prod: findProduct_Product) {
-    prod.age = prod.age ? prod.age + 10 : 99;
-
-    console.log(prod);
-    return prod;
-
+  findProduct(
+    @odata.body x:findProduct_Product
+  ) {
+    const num = x.name;
+    console.log(num, x.age);
+    return x;
   }
 
   //static $metadata (): ServiceMetadata {
   // return ServiceMetadata.processMetadataJson(schema);
   //}
 }
-
 //let servMetadata=ServiceMetadata.processEdmx(schema)
-// AkeraApiServer.$metadata(schema);
+//AkeraApiServer.$metadata(schema);
 
 const app = express();
 app.use("/odata", AkeraApiServer.create());

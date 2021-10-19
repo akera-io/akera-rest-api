@@ -6,7 +6,7 @@
         "namespace": "Default",
         "complexType": [
           {
-            "name": " findProduct_Product",
+            "name": "findProduct_Product",
             "property": [
               {
                 "name": "Name",
@@ -19,19 +19,31 @@
             ]
           }
         ],
-
         "function": [
           {
             "name": "findProduct",
             "parameter": [
               {
                 "name": "num",
-
                 "type": "Edm.Int64"
               }
             ],
             "returnType": {
-              "type": "Edm.complexType( findProduct_Product)"
+              "type": "Edm.Int64"
+            }
+          }
+        ],
+        "action": [
+          {
+            "name": "findProduct",
+            "parameter": [
+              {
+                "name": "x",
+                "type": "Edm.ComplexType(findProduct_Product)"
+              }
+            ],
+            "returnType": {
+              "type": "Edm.ComplexType(findProduct_Product)"
             }
           }
         ],
